@@ -260,7 +260,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <div class="lki"><div class="lkd" style="background:#d89830"></div>Salon Table for 4 · $225/seat</div>
   <div class="lki"><div class="lkd" style="background:#5878c8"></div>Madame's Booth · $300/seat</div>
 </div>
-<p id="soldNotice" class="sold-nb" hidden>Dimmed areas are already sold. Availability loads when this page opens—refresh after you update <code>obscura-sold.json</code>.</p>
+<p id="soldNotice" class="sold-nb" hidden>Dimmed areas are sold. After you confirm a purchase, add that table number to <code>obscura-sold.json</code> (and <code>&quot;ga&quot;: true</code> if GA sells out), publish the file, and guests refresh—sold seats can’t be selected and the Reserve link isn’t used for them.</p>
 </div>
 <div class="sidebar-col">
 <div class="sey">Your selection</div>
@@ -278,7 +278,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <div class="lrow js-pick" data-pick="ga" role="button" tabindex="0"><div class="lsq" style="background:#5a8050"></div><span class="ln">General Admission<small>Standing Room</small></span><span class="lp">$70</span></div>
   <div class="lrow js-pick" data-pick="salon2" data-num="13" role="button" tabindex="0"><div class="lsq" style="background:#c04560"></div><span class="ln">Salon Table for 2<small>Whole Table</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="salon4" data-num="8" role="button" tabindex="0"><div class="lsq" style="background:#d89830"></div><span class="ln">Salon Table for 4<small>Single Seat Selection</small></span><span class="lp">$225</span></div>
-  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6–8<small>Single seat $300 · Full booth $1,800</small></span><span class="lp">$300</span></div>
+  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6<small>Single seat $300 · Full booth $1,800</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="intimate" data-num="19" role="button" tabindex="0"><div class="lsq" style="background:#7a68a8"></div><span class="ln">Intimate Stage Table for 2<small>Single Seat Selection</small></span><span class="lp">$350</span></div>
 </div>
 </div>
@@ -290,7 +290,7 @@ var T={
   intimate:{tag:'Intimate Stage Table for 2',desc:'Single seat at an intimate stage table for two.',price:'$350',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat'},
   salon2:{tag:'Salon Table for 2',desc:'A private reserved table for two.',price:'$300',cap:'Whole Table',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor2'},
   salon4:{tag:'Salon Table for 4',desc:'A single seat at a shared salon table for four.',price:'$225',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor4'},
-  booth:{tag:"Madame's Booth for 6–8",desc:'Single seat selection · $300 per seat. Full private booth (6–8 guests) · $1,800.',price:'$300',cap:'Single Seat Selection · full booth $1,800',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
+  booth:{tag:"Madame's Booth for 6",desc:'Single seat selection · $300 per seat. Full private booth (6 guests) · $1,800.',price:'$300',cap:'Single Seat Selection · full booth $1,800',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
 };
 window.OBSCURA_SOLD={ga:false,tables:[]};
 function ticketHref(base, type, tableNum){
@@ -366,6 +366,28 @@ function applySoldState(sold){
     var any=sold.ga||(sold.tables&&sold.tables.length>0);
     nb.hidden=!any;
   }
+  invalidateSelectionIfSold();
+}
+function invalidateSelectionIfSold(){
+  var hit=document.querySelector('svg.fp .z.on');
+  var row=document.querySelector('.lrow.on');
+  var type=null, num=null;
+  if(hit){
+    type=hit.getAttribute('data-pick');
+    num=hit.getAttribute('data-table');
+  } else if(row){
+    type=row.getAttribute('data-pick');
+    num=row.getAttribute('data-num');
+  }
+  if(!type) return;
+  if(!isUnavailable(type, num||null)) return;
+  clear();
+  var card=document.getElementById('card');
+  var empty=document.getElementById('empty');
+  var rbtn=document.getElementById('rbtn');
+  if(card) card.classList.remove('on');
+  if(empty) empty.style.display='';
+  if(rbtn){ rbtn.href='#'; rbtn.removeAttribute('aria-label'); }
 }
 function clear(){
   document.querySelectorAll('.z.on').forEach(function(el){ el.classList.remove('on'); });
