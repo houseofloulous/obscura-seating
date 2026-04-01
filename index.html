@@ -13,6 +13,8 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .evt-title,.evt-date,.evt-schedule{font-family:'Instrument Serif',serif;}
 .evt-title{font-size:clamp(1.55rem,4vw,2.1rem);font-weight:400;color:#0d0d0d;margin-bottom:.45rem;line-height:1.2;}
 .evt-date{font-size:1.05rem;color:#1a1a1a;line-height:1.55;font-weight:400;margin-bottom:.4rem;}
+.evt-date a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+.evt-date a:hover{opacity:.85;}
 .evt-schedule{font-size:1.05rem;color:#141414;line-height:1.6;font-weight:400;margin-bottom:1.4rem;max-width:40rem;}
 .steps{display:flex;align-items:center;margin-bottom:1.5rem;}
 .stp{font-size:0.95rem;font-weight:600;color:#111;display:flex;align-items:center;gap:6px;white-space:nowrap;}
@@ -24,7 +26,6 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .layout{display:grid;grid-template-columns:1fr minmax(260px,300px);gap:2rem 2.5rem;align-items:start;}
 @media(max-width:720px){.layout{grid-template-columns:1fr;}}
 .layout > .map-col{min-width:0;}
-.vey{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:600;margin-bottom:.55rem;}
 svg.fp{width:100%;max-width:780px;height:auto;display:block;}
 svg.fp text{font-family:'Playfair Display',serif!important;}
 .z{cursor:pointer;}.z .mc{transition:opacity .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
@@ -37,12 +38,14 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 .lkey{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:.75rem;}
 .lki{display:flex;align-items:center;gap:6px;font-size:0.8rem;letter-spacing:.05em;text-transform:uppercase;color:#333;font-weight:600;}
 .lkd{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.sey{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:700;margin-bottom:.75rem;}
+.sey{font-size:1.05rem;letter-spacing:.12em;text-transform:uppercase;color:#111;font-weight:700;margin-bottom:.75rem;}
 .sempty{font-size:1rem;color:#3d3d3d;line-height:1.65;max-width:26em;}
 .scard{display:none;}.scard.on{display:block;margin-top:.25rem;}
 .stag{display:inline-block;font-size:0.68rem;letter-spacing:.12em;text-transform:uppercase;background:#111;color:#f5f0eb;padding:7px 13px;margin-bottom:.85rem;font-weight:600;}
-.sname{font-size:0.95rem;letter-spacing:.06em;text-transform:uppercase;color:#111;margin-bottom:.45rem;font-weight:600;}
+.sname{font-size:0.95rem;letter-spacing:.06em;text-transform:uppercase;color:#111;margin-bottom:.45rem;font-weight:600;display:none;}
 .sdesc{font-size:1.05rem;color:#252525;line-height:1.65;margin-bottom:1rem;max-width:28em;}
+.sdesc a{color:#162B3B;text-decoration:underline;text-underline-offset:2px;}
+.sdesc a:hover{opacity:.9;}
 .sprice{font-size:2.1rem;color:#0d0d0d;margin-bottom:.2rem;font-weight:600;line-height:1.1;}
 .scap{font-size:0.95rem;letter-spacing:.05em;text-transform:uppercase;color:#333;margin-bottom:1.5rem;line-height:1.5;font-weight:600;}
 .rbtn{display:block;width:100%;background:#162B3B;color:#f5f0eb;border:none;padding:15px 12px;font-size:0.8rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:0;text-align:center;text-decoration:none;}
@@ -62,7 +65,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 <body>
 <div class="wrap">
 <div class="evt-title">OBSCURA</div>
-<div class="evt-date">Sat, May 2, 2026 &nbsp;·&nbsp; Red Pavilion, New York City</div>
+<div class="evt-date">Sat, May 2, 2026 &nbsp;·&nbsp; <a href="https://maps.app.goo.gl/9FEoVo52BVGVYE2D8" target="_blank" rel="noopener noreferrer">The Red Pavilion</a>, Brooklyn</div>
 <div class="evt-schedule">Check-in at the lobby begins at 8:30 PM. Show: 9:00 PM.</div>
 <div class="steps">
   <div class="stp"><div class="sdot"></div>Tickets</div>
@@ -74,7 +77,6 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 <hr class="rule">
 <div class="layout">
 <div class="map-col">
-<div class="vey">Red Pavilion &nbsp;·&nbsp; tap a table to select</div>
 <svg class="fp" viewBox="0 0 780 920" xmlns="http://www.w3.org/2000/svg" aria-label="Floor plan">
 
   <rect x="0" y="0" width="780" height="920" fill="#ede8e0"/>
@@ -263,7 +265,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 <p id="soldNotice" class="sold-nb" hidden>Dimmed areas are sold. After you confirm a purchase, add that table number to <code>obscura-sold.json</code> (and <code>&quot;ga&quot;: true</code> if GA sells out), publish the file, and guests refresh—sold seats can’t be selected and the Reserve link isn’t used for them.</p>
 </div>
 <div class="sidebar-col">
-<div class="sey">Your selection</div>
+<div class="sey">Your Selection</div>
 <div id="empty" class="sempty">Tap any table or the GA floor to see details and reserve.</div>
 <div id="card" class="scard">
   <div class="stag" id="stag"></div>
@@ -278,7 +280,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <div class="lrow js-pick" data-pick="ga" role="button" tabindex="0"><div class="lsq" style="background:#5a8050"></div><span class="ln">General Admission<small>Standing Room</small></span><span class="lp">$70</span></div>
   <div class="lrow js-pick" data-pick="salon2" data-num="13" role="button" tabindex="0"><div class="lsq" style="background:#c04560"></div><span class="ln">Salon Table for 2<small>Whole Table</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="salon4" data-num="8" role="button" tabindex="0"><div class="lsq" style="background:#d89830"></div><span class="ln">Salon Table for 4<small>Single Seat Selection</small></span><span class="lp">$225</span></div>
-  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6<small>Single seat $300 · Full booth $1,800</small></span><span class="lp">$300</span></div>
+  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6<small>Single seat $300 · Option to secure full booth — inquire</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="intimate" data-num="19" role="button" tabindex="0"><div class="lsq" style="background:#7a68a8"></div><span class="ln">Intimate Stage Table for 2<small>Single Seat Selection</small></span><span class="lp">$350</span></div>
 </div>
 </div>
@@ -290,7 +292,7 @@ var T={
   intimate:{tag:'Intimate Stage Table for 2',desc:'Single seat at an intimate stage table for two.',price:'$350',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat'},
   salon2:{tag:'Salon Table for 2',desc:'A private reserved table for two.',price:'$300',cap:'Whole Table',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor2'},
   salon4:{tag:'Salon Table for 4',desc:'A single seat at a shared salon table for four.',price:'$225',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor4'},
-  booth:{tag:"Madame's Booth for 6",desc:'Single seat selection · $300 per seat. Full private booth (6 guests) · $1,800.',price:'$300',cap:'Single Seat Selection · full booth $1,800',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
+  booth:{tag:"Madame's Booth for 6",desc:'',price:'$300',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
 };
 window.OBSCURA_SOLD={ga:false,tables:[]};
 function ticketHref(base, type, tableNum){
@@ -416,13 +418,13 @@ function pick(type, num, rowEl){
   document.getElementById('empty').style.display='none';
   document.getElementById('card').classList.add('on');
   var stag=d.tag;
-  if(num){
-    if(type==='booth') stag="Madame's Booth "+num;
-    else stag='Table '+num;
-  }
   document.getElementById('stag').textContent=stag;
-  document.getElementById('sname').textContent=d.tag;
-  document.getElementById('sdesc').textContent=d.desc;
+  var sdescEl=document.getElementById('sdesc');
+  if(type==='booth'){
+    sdescEl.innerHTML='Single seat selection · $300 per seat. Option to secure the full booth. <a href="mailto:concierge@madameloulous.com">Inquire within here</a>.';
+  }else{
+    sdescEl.textContent=d.desc;
+  }
   document.getElementById('sprice').textContent=d.price;
   document.getElementById('scap').textContent=d.cap;
   document.getElementById('rbtn').href=ticketHref(d.url, type, num);
