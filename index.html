@@ -280,7 +280,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <div class="lrow js-pick" data-pick="ga" role="button" tabindex="0"><div class="lsq" style="background:#5a8050"></div><span class="ln">General Admission<small>Standing Room</small></span><span class="lp">$70</span></div>
   <div class="lrow js-pick" data-pick="salon2" data-num="13" role="button" tabindex="0"><div class="lsq" style="background:#c04560"></div><span class="ln">Salon Table for 2<small>Whole Table</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="salon4" data-num="8" role="button" tabindex="0"><div class="lsq" style="background:#d89830"></div><span class="ln">Salon Table for 4<small>Single Seat Selection</small></span><span class="lp">$225</span></div>
-  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6<small>Single seat $300 · Option to secure full booth — inquire</small></span><span class="lp">$300</span></div>
+  <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6<small>Single seat · Option to secure full booth — inquire</small></span><span class="lp">$300</span></div>
   <div class="lrow js-pick" data-pick="intimate" data-num="19" role="button" tabindex="0"><div class="lsq" style="background:#7a68a8"></div><span class="ln">Intimate Stage Table for 2<small>Single Seat Selection</small></span><span class="lp">$350</span></div>
 </div>
 </div>
@@ -421,7 +421,7 @@ function pick(type, num, rowEl){
   document.getElementById('stag').textContent=stag;
   var sdescEl=document.getElementById('sdesc');
   if(type==='booth'){
-    sdescEl.innerHTML='Single seat selection · $300 per seat. Option to secure the full booth. <a href="mailto:concierge@madameloulous.com">Inquire within here</a>.';
+    sdescEl.innerHTML='Single seat selection. Option to secure the full booth. <a href="mailto:concierge@madameloulous.com">Inquire within here</a>.';
   }else{
     sdescEl.textContent=d.desc;
   }
