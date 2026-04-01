@@ -1,161 +1,226 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obscura Seating Selector</title>
-    <style>
-        :root {
-            --cream: #f5f0eb;
-            --navy: #1e3a4a;
-            --black: #1a1a1a;
-            --taupe: #d2c5b8;
-        }
-        body {
-            background-color: var(--cream);
-            color: var(--black);
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
-        h1 {
-            font-family: "EB Garamond", serif;
-            font-style: italic;
-            font-size: 2.5rem;
-            margin: 0;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
-        }
-        .meta { font-size: 0.8rem; margin-top: 10px; }
-        
-        #map-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            background: var(--cream);
-        }
-        svg { width: 100%; height: auto; cursor: crosshair; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OBSCURA x House of LouLou’s</title>
+  <style>
+    :root {
+      --cream: #f5f0eb;
+      --ink: #111111;
+      --navy: #1e3a4a;
+      --taupe: #c7b8a3;
+    }
 
-        /* Styling for the different zones */
-        .ga-zone { fill: rgba(30, 58, 74, 0.1); stroke: var(--navy); stroke-dasharray: 4; }
-        .stage { fill: var(--taupe); opacity: 0.6; }
-        .table-shape { fill: white; stroke: var(--black); stroke-width: 1.5; transition: 0.2s; cursor: pointer; }
-        .table-shape:hover { fill: var(--navy); stroke: var(--navy); }
-        .seat-dot { fill: var(--navy); stroke: white; stroke-width: 1; }
-        .label { font-size: 14px; font-weight: bold; pointer-events: none; text-anchor: middle; }
-        
-        .sidebar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: white;
-            border-top: 1px solid #ccc;
-            padding: 20px;
-            display: none;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-        .btn {
-            background: var(--navy);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-    </style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 40px;
+      line-height: 1.05;
+      font-weight: 600;
+    }
+
+    .meta {
+      font-size: 14px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .map-shell {
+      background: #fff;
+      border: 1px solid rgba(17,17,17,.12);
+      padding: 18px;
+    }
+
+    .map {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 900 / 1200;
+      background: url("red-pavilion-obscura-map.png") center/contain no-repeat;
+    }
+
+    .hotspot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      border: 1.5px solid rgba(17,17,17,.55);
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(2px);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot.active {
+      background: rgba(30,58,74,.14);
+      border-color: var(--navy);
+    }
+
+    .hotspot.rect { border-radius: 14px; }
+    .hotspot.zone { border-radius: 24px; }
+
+    .sidebar {
+      background: #fff;
+      border: 1px solid rgba(17,17,17,.12);
+      padding: 22px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      opacity: .7;
+      margin-bottom: 8px;
+    }
+
+    .name {
+      font-size: 28px;
+      line-height: 1.1;
+      margin: 0 0 8px;
+    }
+
+    .price {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .desc {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: 14px 18px;
+      background: var(--navy);
+      color: white;
+      text-decoration: none;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      h1 { font-size: 30px; }
+    }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="eyebrow">Neo-Noir Cabaret</div>
+    <h1>OBSCURA x House of LouLou’s</h1>
+    <div class="meta">May 2, 2026 • 8:00 PM • Red Pavilion • New York</div>
 
-<header>
-    <h1>Obscura × House of LouLou's</h1>
-    <div class="meta">MAY 2, 2026 • RED PAVILION • 8:00 PM</div>
-</header>
+    <div class="layout">
+      <div class="map-shell">
+        <div class="map" id="map"></div>
+      </div>
 
-<div id="map-container">
-    <svg viewBox="0 0 1000 1200" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 600,50 L 950,50 L 950,600 L 800,600 L 800,250 L 600,250 Z" class="ga-zone" />
-        <text x="800" y="150" text-anchor="middle" font-size="20" fill="var(--navy)">GA AREA</text>
+      <aside class="sidebar">
+        <div class="label">Selection</div>
+        <h2 class="name" id="name">Select a table or section</h2>
+        <div class="price" id="price"> </div>
+        <div class="desc" id="desc">
+          Tap any highlighted area on the floor plan to view details and reserve.
+        </div>
+        <a class="btn" id="reserve" href="#" target="_blank" rel="noopener" style="display:none;">Reserve</a>
+      </aside>
+    </div>
+  </div>
 
-        <rect x="250" y="550" width="500" height="60" class="stage" />
-        <text x="500" y="585" text-anchor="middle" font-size="16">DINNER TABLE STAGE</text>
+  <script>
+    const items = [
+      {
+        id: "ga",
+        type: "zone",
+        x: 78, y: 18, w: 18, h: 34,
+        name: "General Admission",
+        price: "$70",
+        desc: "Standing room access.",
+        url: "PASTE_SQUARESPACE_GA_URL"
+      },
+      {
+        id: "14",
+        type: "circle",
+        x: 58, y: 25, w: 5, h: 5,
+        name: "Table 14",
+        price: "Salon Table for 2 • $300",
+        desc: "High-top seating.",
+        url: "PASTE_TABLE_FOR_2_URL"
+      },
+      {
+        id: "15",
+        type: "circle",
+        x: 66, y: 25, w: 5, h: 5,
+        name: "Table 15",
+        price: "Salon Table for 2 • $300",
+        desc: "High-top seating.",
+        url: "PASTE_TABLE_FOR_2_URL"
+      }
+    ];
 
-        <path d="M 300,1100 A 200,100 0 0 1 700,1100 Z" class="stage" />
-        <text x="500" y="1140" text-anchor="middle">MAIN STAGE</text>
+    const map = document.getElementById("map");
+    const nameEl = document.getElementById("name");
+    const priceEl = document.getElementById("price");
+    const descEl = document.getElementById("desc");
+    const reserveEl = document.getElementById("reserve");
 
-        <g class="booth" onclick="selectItem('Madame\'s Booth', '$1,800', 'https://www.houseofloulous.com/obscura')">
-            <path d="M 80,150 Q 50,200 80,250 Q 120,300 150,250 Q 180,200 150,150 Z" class="table-shape" />
-            <text x="115" y="210" class="label">17</text>
-        </g>
-        <g class="booth" onclick="selectItem('Madame\'s Booth', '$1,800', 'https://www.houseofloulous.com/obscura')">
-            <path d="M 80,350 Q 50,400 80,450 Q 120,500 150,450 Q 180,400 150,350 Z" class="table-shape" />
-            <text x="115" y="410" class="label">16</text>
-        </g>
-
-        <circle cx="250" cy="150" r="35" class="table-shape" onclick="selectItem('Table 13', '$300', '#')" />
-        <text x="250" y="155" class="label">13</text>
-        
-        <circle cx="400" cy="150" r="35" class="table-shape" onclick="selectItem('Table 14', '$300', '#')" />
-        <text x="400" y="155" class="label">14</text>
-
-        <circle cx="530" cy="150" r="35" class="table-shape" onclick="selectItem('Table 15', '$300', '#')" />
-        <text x="530" y="155" class="label">15</text>
-
-        <circle cx="300" cy="300" r="45" class="table-shape" />
-        <text x="300" y="305" class="label">10</text>
-        <circle cx="500" cy="300" r="45" class="table-shape" />
-        <text x="500" y="305" class="label">11</text>
-        <circle cx="700" cy="300" r="45" class="table-shape" />
-        <text x="700" y="305" class="label">12</text>
-
-        <circle cx="300" cy="450" r="45" class="table-shape" />
-        <text x="300" y="455" class="label">7</text>
-        <circle cx="500" cy="450" r="45" class="table-shape" />
-        <text x="500" y="455" class="label">8</text>
-        <circle cx="700" cy="450" r="45" class="table-shape" />
-        <text x="700" y="455" class="label">9</text>
-
-        <rect x="270" y="520" width="60" height="30" class="table-shape" />
-        <text x="300" y="540" class="label" style="font-size:10px">21</text>
-        <rect x="270" y="610" width="60" height="30" class="table-shape" />
-        <text x="300" y="630" class="label" style="font-size:10px">22</text>
-
-        <rect x="200" y="1050" width="80" height="40" class="table-shape" />
-        <text x="240" y="1075" class="label">19</text>
-        <rect x="720" y="1050" width="80" height="40" class="table-shape" />
-        <text x="760" y="1075" class="label">20</text>
-        
-        <circle cx="850" cy="1000" r="30" class="table-shape" />
-        <text x="850" y="1005" class="label">1</text>
-
-    </svg>
-</div>
-
-<div id="selection-sidebar" class="sidebar">
-    <h3 id="selected-name">Select a Table</h3>
-    <p id="selected-price"></p>
-    <a href="#" id="reserve-link" class="btn">Reserve Tickets</a>
-</div>
-
-<script>
-    function selectItem(name, price, link) {
-        document.getElementById('selection-sidebar').style.display = 'block';
-        document.getElementById('selected-name').innerText = name;
-        document.getElementById('selected-price').innerText = price;
-        document.getElementById('reserve-link').href = link;
+    function selectItem(item, el) {
+      document.querySelectorAll(".hotspot").forEach(h => h.classList.remove("active"));
+      el.classList.add("active");
+      nameEl.textContent = item.name;
+      priceEl.textContent = item.price;
+      descEl.textContent = item.desc;
+      reserveEl.href = item.url;
+      reserveEl.style.display = "inline-block";
     }
-</script>
 
+    items.forEach(item => {
+      const el = document.createElement("button");
+      el.className = `hotspot ${item.type === "zone" ? "zone rect" : item.type === "rect" ? "rect" : ""}`;
+      el.style.left = `${item.x}%`;
+      el.style.top = `${item.y}%`;
+      el.style.width = `${item.w}%`;
+      el.style.height = `${item.h}%`;
+      el.setAttribute("aria-label", item.name);
+      el.addEventListener("click", () => selectItem(item, el));
+      map.appendChild(el);
+    });
+  </script>
 </body>
 </html>
