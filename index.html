@@ -26,9 +26,62 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .layout{display:grid;grid-template-columns:1fr minmax(260px,300px);gap:2rem 2.5rem;align-items:start;}
 @media(max-width:720px){.layout{grid-template-columns:1fr;}}
 .layout > .map-col{min-width:0;}
+.map-shell{position:relative;}
+.map-stage{position:relative;width:100%;}
+.map-zoom-inner{width:100%;}
+.map-zoom-btn{
+  position:absolute;top:4px;left:4px;z-index:10;
+  width:44px;height:44px;border:1px solid #c9c2b8;border-radius:4px;
+  background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.1);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  color:#162B3B;
+}
+.map-zoom-btn:hover{background:#faf8f5;}
+.map-zoom-btn:focus-visible{outline:2px solid #162B3B;outline-offset:2px;}
+.map-zoom-close{
+  position:fixed;top:12px;right:12px;z-index:10001;
+  width:44px;height:44px;border:1px solid #c9c2b8;border-radius:4px;
+  background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.12);cursor:pointer;
+  font-size:1.5rem;line-height:1;color:#333;padding:0;
+  display:none;align-items:center;justify-content:center;
+}
+.map-zoom-out{
+  position:fixed;bottom:max(16px,env(safe-area-inset-bottom));left:12px;z-index:10001;
+  width:44px;height:44px;border:1px solid #c9c2b8;border-radius:4px;
+  background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.12);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  color:#162B3B;
+}
+.map-zoom-out:hover{background:#faf8f5;}
+.map-zoom-out:focus-visible{outline:2px solid #162B3B;outline-offset:2px;}
+body.map-zoom-open{overflow:hidden;}
+body.map-zoom-open .map-zoom-close{display:flex;}
+body.map-zoom-open .map-zoom-btn{display:none;}
+body.map-zoom-open .map-shell{
+  position:fixed;inset:0;z-index:10000;background:#f5f0eb;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+body.map-zoom-open .map-stage{
+  flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
+  padding:52px 10px 20px;touch-action:pan-x pan-y;
+}
+body.map-zoom-open .map-zoom-inner{
+  width:165%;max-width:1300px;margin:0 auto;
+}
+body.map-zoom-open .map-zoom-inner .fp{width:100%;max-width:none;}
+body.map-zoom-open .sidebar-col{visibility:hidden;pointer-events:none;}
+body.map-zoom-open .sold-nb{display:none!important;}
+@media(min-width:721px){
+  .map-zoom-btn{top:8px;left:8px;}
+}
 svg.fp{width:100%;max-width:780px;height:auto;display:block;}
 svg.fp text{font-family:'Playfair Display',serif!important;}
-.z{cursor:pointer;}.z .mc{transition:opacity .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
+.z{cursor:pointer;}.z .mc{transition:opacity .12s,fill .12s,stroke .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
+.z[data-seat].on .mc{opacity:1!important;filter:none!important;}
+.z[data-pick="salon4"].on .mc{fill:#e06020!important;stroke:#a84810!important;stroke-width:2.5!important;}
+.z[data-pick="booth"].on .mc{fill:#3d5aa8!important;stroke:#2a4080!important;stroke-width:2.5!important;}
+g.table-pending > ellipse:first-child,
+g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.45));}
 .z.sold{cursor:not-allowed;pointer-events:none;opacity:.45;filter:grayscale(.4);}
 .z.sold .mc{opacity:.85;}
 .lrow.sold{opacity:.55;cursor:not-allowed;pointer-events:none;}
@@ -47,6 +100,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 .scap{font-size:0.95rem;letter-spacing:.05em;text-transform:uppercase;color:#333;margin-bottom:1.5rem;line-height:1.5;font-weight:600;}
 .rbtn{display:block;width:100%;background:#162B3B;color:#f5f0eb;border:none;padding:15px 12px;font-size:0.8rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:0;text-align:center;text-decoration:none;}
 .rbtn:hover{background:#1e3d52;}
+.rbtn.rbtn-disabled{opacity:.45;pointer-events:none;cursor:not-allowed;}
 .leg{margin-top:1.75rem;padding-top:1.4rem;border-top:1px solid #e8e3dc;}
 .leye{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:700;margin-bottom:.65rem;}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid #e8e3dc;cursor:pointer;border-radius:4px;}
@@ -74,6 +128,16 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
 <hr class="rule">
 <div class="layout">
 <div class="map-col">
+<div class="map-shell" id="mapShell">
+<button type="button" class="map-zoom-btn" id="mapZoomBtn" aria-expanded="false" aria-controls="mapShell" title="Expand floor plan">
+  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg>
+</button>
+<button type="button" class="map-zoom-close" id="mapZoomClose" hidden aria-label="Close expanded map">×</button>
+<button type="button" class="map-zoom-out" id="mapZoomOut" hidden aria-label="Zoom out floor plan" title="Zoom out">
+  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><path d="M16 16l4 4M8 11h6"/></svg>
+</button>
+<div class="map-stage">
+<div class="map-zoom-inner">
 <svg class="fp" viewBox="0 0 780 920" xmlns="http://www.w3.org/2000/svg" aria-label="Floor plan">
 
   <rect x="0" y="0" width="780" height="920" fill="#ede8e0"/>
@@ -94,25 +158,25 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <path d="M 80 920 Q 390 800 700 920 Z" fill="#2a2520"/>
   <text x="390" y="876" text-anchor="middle" font-size="17" letter-spacing="4" fill="#f5f0eb" style="pointer-events:none">STAGE</text>
 
-  <g class="z" id="zt17" data-pick="booth" data-table="17">
-    <ellipse class="mc" cx="150" cy="335" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2"/>
-    <circle class="mc" cx="116" cy="411" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="95" cy="387" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="83" cy="353" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="83" cy="317" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="95" cy="283" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="116" cy="259" r="10" fill="#5878c8"/>
+  <g id="zt17">
+    <ellipse class="mc" cx="150" cy="335" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="booth" data-table="17" data-seat="1"><circle class="mc" cx="116" cy="411" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="2"><circle class="mc" cx="95" cy="387" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="3"><circle class="mc" cx="83" cy="353" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="4"><circle class="mc" cx="83" cy="317" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="5"><circle class="mc" cx="95" cy="283" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="6"><circle class="mc" cx="116" cy="259" r="10" fill="#5878c8"/></g>
     <text x="150" y="340" text-anchor="middle" font-size="18" fill="#3a5090" font-weight="600" style="pointer-events:none">17</text>
   </g>
 
-  <g class="z" id="zt16" data-pick="booth" data-table="16">
-    <ellipse class="mc" cx="150" cy="648" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2"/>
-    <circle class="mc" cx="116" cy="724" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="95" cy="700" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="83" cy="666" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="83" cy="630" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="95" cy="596" r="10" fill="#5878c8"/>
-    <circle class="mc" cx="116" cy="572" r="10" fill="#5878c8"/>
+  <g id="zt16">
+    <ellipse class="mc" cx="150" cy="648" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="booth" data-table="16" data-seat="1"><circle class="mc" cx="116" cy="724" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="2"><circle class="mc" cx="95" cy="700" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="3"><circle class="mc" cx="83" cy="666" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="4"><circle class="mc" cx="83" cy="630" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="5"><circle class="mc" cx="95" cy="596" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="6"><circle class="mc" cx="116" cy="572" r="10" fill="#5878c8"/></g>
     <text x="150" y="653" text-anchor="middle" font-size="18" fill="#3a5090" font-weight="600" style="pointer-events:none">16</text>
   </g>
 
@@ -141,28 +205,28 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
     <text x="535" y="153" text-anchor="middle" font-size="15" fill="white" font-weight="600" style="pointer-events:none">15</text>
   </g>
 
-  <g class="z" id="zt10" data-pick="salon4" data-table="10">
-    <circle class="mc" cx="310" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="288" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="332" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="288" cy="245" r="10" fill="#d89830"/>
-    <circle class="mc" cx="332" cy="245" r="10" fill="#d89830"/>
+  <g id="zt10">
+    <circle class="mc" cx="310" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="1"><circle class="mc" cx="288" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="2"><circle class="mc" cx="332" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="3"><circle class="mc" cx="332" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="4"><circle class="mc" cx="288" cy="245" r="10" fill="#d89830"/></g>
     <text x="310" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">10</text>
   </g>
-  <g class="z" id="zt11" data-pick="salon4" data-table="11">
-    <circle class="mc" cx="398" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="376" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="376" cy="245" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="245" r="10" fill="#d89830"/>
+  <g id="zt11">
+    <circle class="mc" cx="398" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="1"><circle class="mc" cx="376" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="2"><circle class="mc" cx="420" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="3"><circle class="mc" cx="420" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="4"><circle class="mc" cx="376" cy="245" r="10" fill="#d89830"/></g>
     <text x="398" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">11</text>
   </g>
-  <g class="z" id="zt12" data-pick="salon4" data-table="12">
-    <circle class="mc" cx="486" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="464" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="508" cy="205" r="10" fill="#d89830"/>
-    <circle class="mc" cx="464" cy="245" r="10" fill="#d89830"/>
-    <circle class="mc" cx="508" cy="245" r="10" fill="#d89830"/>
+  <g id="zt12">
+    <circle class="mc" cx="486" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="1"><circle class="mc" cx="464" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="2"><circle class="mc" cx="508" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="3"><circle class="mc" cx="508" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="4"><circle class="mc" cx="464" cy="245" r="10" fill="#d89830"/></g>
     <text x="486" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">12</text>
   </g>
 
@@ -184,37 +248,37 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
     <text x="314" y="416" text-anchor="middle" font-size="16" fill="white" font-weight="600" style="pointer-events:none">20</text>
   </g>
 
-  <g class="z" id="zt7" data-pick="salon4" data-table="7">
-    <circle class="mc" cx="310" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="288" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="332" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="288" cy="530" r="10" fill="#d89830"/>
-    <circle class="mc" cx="332" cy="530" r="10" fill="#d89830"/>
+  <g id="zt7">
+    <circle class="mc" cx="310" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="1"><circle class="mc" cx="288" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="2"><circle class="mc" cx="332" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="3"><circle class="mc" cx="332" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="4"><circle class="mc" cx="288" cy="530" r="10" fill="#d89830"/></g>
     <text x="310" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">7</text>
   </g>
-  <g class="z" id="zt8" data-pick="salon4" data-table="8">
-    <circle class="mc" cx="398" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="376" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="376" cy="530" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="530" r="10" fill="#d89830"/>
+  <g id="zt8">
+    <circle class="mc" cx="398" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="1"><circle class="mc" cx="376" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="2"><circle class="mc" cx="420" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="3"><circle class="mc" cx="420" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="4"><circle class="mc" cx="376" cy="530" r="10" fill="#d89830"/></g>
     <text x="398" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">8</text>
   </g>
-  <g class="z" id="zt9" data-pick="salon4" data-table="9">
-    <circle class="mc" cx="486" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="464" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="508" cy="490" r="10" fill="#d89830"/>
-    <circle class="mc" cx="464" cy="530" r="10" fill="#d89830"/>
-    <circle class="mc" cx="508" cy="530" r="10" fill="#d89830"/>
+  <g id="zt9">
+    <circle class="mc" cx="486" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="1"><circle class="mc" cx="464" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="2"><circle class="mc" cx="508" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="3"><circle class="mc" cx="508" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="4"><circle class="mc" cx="464" cy="530" r="10" fill="#d89830"/></g>
     <text x="486" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">9</text>
   </g>
 
-  <g class="z" id="zt6" data-pick="salon4" data-table="6">
-    <circle class="mc" cx="398" cy="606" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
-    <circle class="mc" cx="376" cy="586" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="586" r="10" fill="#d89830"/>
-    <circle class="mc" cx="376" cy="626" r="10" fill="#d89830"/>
-    <circle class="mc" cx="420" cy="626" r="10" fill="#d89830"/>
+  <g id="zt6">
+    <circle class="mc" cx="398" cy="606" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="1"><circle class="mc" cx="376" cy="586" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="2"><circle class="mc" cx="420" cy="586" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="3"><circle class="mc" cx="420" cy="626" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="4"><circle class="mc" cx="376" cy="626" r="10" fill="#d89830"/></g>
     <text x="398" y="611" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">6</text>
   </g>
 
@@ -252,7 +316,10 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   </g>
 
 </svg>
-<p id="soldNotice" class="sold-nb" hidden>Dimmed areas are sold. After you confirm a purchase, add that table number to <code>obscura-sold.json</code> (and <code>&quot;ga&quot;: true</code> if GA sells out), publish the file, and guests refresh—sold seats can’t be selected and the Reserve link isn’t used for them.</p>
+</div>
+</div>
+</div>
+<p id="soldNotice" class="sold-nb" hidden>Dimmed areas are sold. After you confirm a purchase, add that table number to <code>obscura-sold.json</code> (and <code>&quot;ga&quot;: true</code> if GA sells out). For a single sold seat at a shared table or booth, use <code>&quot;seats&quot;: [&quot;8-3&quot;, &quot;16-2&quot;]</code> (table–seat). Publish the file and guests refresh—sold seats can’t be selected.</p>
 </div>
 <div class="sidebar-col">
 <div class="sey">Your Selection</div>
@@ -263,7 +330,7 @@ svg.fp text{font-family:'Playfair Display',serif!important;}
   <div class="sdesc" id="sdesc"></div>
   <div class="sprice" id="sprice"></div>
   <div class="scap" id="scap"></div>
-  <a class="rbtn" id="rbtn" href="#" target="_blank" rel="noopener">Reserve →</a>
+  <a class="rbtn" id="rbtn" href="#" target="_blank" rel="noopener">Continue to checkout →</a>
 </div>
 <div class="leg">
   <div class="leye">All ticket types</div>
@@ -284,30 +351,53 @@ var T={
   salon4:{tag:'Salon Table for 4',desc:'A single seat at a shared salon table for four.',price:'$225',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor4'},
   booth:{tag:"Madame's Booth for 6",desc:'',price:'$300',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
 };
-window.OBSCURA_SOLD={ga:false,tables:[]};
-function ticketHref(base, type, tableNum){
+window.OBSCURA_SOLD={ga:false,tables:[],seats:[]};
+var __mapZoom={open:null,close:null};
+function ticketHref(base, type, tableNum, seatNum){
   try{
     var u=new URL(base, window.location.href);
     u.searchParams.set('placement', type);
     if(tableNum) u.searchParams.set('table', String(tableNum));
+    if(seatNum!=null&&seatNum!=='') u.searchParams.set('seat', String(seatNum));
     return u.toString();
   }catch(e){
     var q='placement='+encodeURIComponent(type)+(tableNum?'&table='+encodeURIComponent(tableNum):'');
+    if(seatNum!=null&&seatNum!=='') q+='&seat='+encodeURIComponent(seatNum);
     return base+(base.indexOf('?')>=0?'&':'?')+q;
   }
 }
-function isUnavailable(type, num){
+function pickDisabledRbtn(rbtn){
+  rbtn.href='#';
+  rbtn.classList.add('rbtn-disabled');
+  rbtn.setAttribute('aria-disabled','true');
+  rbtn.removeAttribute('aria-label');
+}
+function pickEnabledRbtn(rbtn, href, label){
+  rbtn.href=href;
+  rbtn.classList.remove('rbtn-disabled');
+  rbtn.removeAttribute('aria-disabled');
+  rbtn.setAttribute('aria-label', label);
+}
+function isUnavailable(type, num, seat){
   var s=window.OBSCURA_SOLD;
   if(!s) return false;
   if(type==='ga'&&s.ga) return true;
   if(num==null||num==='') return false;
   var n=String(num);
-  return s.tables.indexOf(n)>=0;
+  if(s.tables&&s.tables.indexOf(n)>=0) return true;
+  if(seat!=null&&seat!==''&&(type==='salon4'||type==='booth')){
+    var key=n+'-'+String(seat);
+    if(s.seats&&s.seats.indexOf(key)>=0) return true;
+  }
+  return false;
 }
 function mergeSoldFromQuery(remote){
-  var out={ga:!!(remote&&remote.ga),tables:[]};
+  var out={ga:!!(remote&&remote.ga),tables:[],seats:[]};
   if(remote&&remote.tables){
     remote.tables.forEach(function(t){ out.tables.push(String(t)); });
+  }
+  if(remote&&remote.seats){
+    remote.seats.forEach(function(k){ out.seats.push(String(k)); });
   }
   try{
     var q=new URLSearchParams(location.search);
@@ -319,10 +409,18 @@ function mergeSoldFromQuery(remote){
         if(x&&out.tables.indexOf(x)<0) out.tables.push(x);
       });
     }
+    var soldSeats=q.get('soldSeats')||q.get('seats');
+    if(soldSeats){
+      soldSeats.split(/[,+\s]+/).forEach(function(x){
+        x=String(x).trim();
+        if(x&&out.seats.indexOf(x)<0) out.seats.push(x);
+      });
+    }
   }catch(e){}
   return out;
 }
 function applySoldState(sold){
+  if(!sold.seats) sold.seats=[];
   window.OBSCURA_SOLD=sold;
   document.querySelectorAll('svg.fp .z').forEach(function(el){
     el.classList.remove('sold');
@@ -338,8 +436,19 @@ function applySoldState(sold){
     if(gaEl){ gaEl.classList.add('sold'); gaEl.setAttribute('aria-disabled','true'); }
   }
   (sold.tables||[]).forEach(function(t){
-    var z=document.getElementById('zt'+t);
-    if(z){ z.classList.add('sold'); z.setAttribute('aria-disabled','true'); }
+    var wrap=document.getElementById('zt'+t);
+    if(wrap){
+      wrap.querySelectorAll('.z').forEach(function(el){
+        el.classList.add('sold');
+        el.setAttribute('aria-disabled','true');
+      });
+    }
+  });
+  (sold.seats||[]).forEach(function(key){
+    var m=String(key).match(/^(\d+)-(\d+)$/);
+    if(!m) return;
+    var el=document.querySelector('.z[data-pick][data-table="'+m[1]+'"][data-seat="'+m[2]+'"]');
+    if(el){ el.classList.add('sold'); el.setAttribute('aria-disabled','true'); }
   });
   document.querySelectorAll('.js-pick').forEach(function(row){
     var pickType=row.getAttribute('data-pick');
@@ -355,7 +464,7 @@ function applySoldState(sold){
   });
   var nb=document.getElementById('soldNotice');
   if(nb){
-    var any=sold.ga||(sold.tables&&sold.tables.length>0);
+    var any=sold.ga||(sold.tables&&sold.tables.length>0)||(sold.seats&&sold.seats.length>0);
     nb.hidden=!any;
   }
   invalidateSelectionIfSold();
@@ -363,27 +472,30 @@ function applySoldState(sold){
 function invalidateSelectionIfSold(){
   var hit=document.querySelector('svg.fp .z.on');
   var row=document.querySelector('.lrow.on');
-  var type=null, num=null;
+  var type=null, num=null, seat=null;
   if(hit){
     type=hit.getAttribute('data-pick');
     num=hit.getAttribute('data-table');
+    seat=hit.getAttribute('data-seat');
   } else if(row){
     type=row.getAttribute('data-pick');
     num=row.getAttribute('data-num');
   }
   if(!type) return;
-  if(!isUnavailable(type, num||null)) return;
+  if(!isUnavailable(type, num||null, seat)) return;
   clear();
   var card=document.getElementById('card');
   var empty=document.getElementById('empty');
   var rbtn=document.getElementById('rbtn');
   if(card) card.classList.remove('on');
   if(empty) empty.style.display='';
-  if(rbtn){ rbtn.href='#'; rbtn.removeAttribute('aria-label'); }
+  if(rbtn){ pickDisabledRbtn(rbtn); }
 }
 function clear(){
   document.querySelectorAll('.z.on').forEach(function(el){ el.classList.remove('on'); });
   document.querySelectorAll('.lrow.on').forEach(function(el){ el.classList.remove('on'); });
+  document.querySelectorAll('g.table-pending').forEach(function(g){ g.classList.remove('table-pending'); });
+  window.__pendingSeatPick=null;
 }
 function mapHighlight(type, num){
   if(type==='ga'){
@@ -398,12 +510,55 @@ function mapHighlight(type, num){
     if(z) z.classList.add('on');
   }
 }
-function pick(type, num, rowEl){
+function pickPendingSeat(type, num, rowEl){
   if(isUnavailable(type, num)) return;
   var d=T[type];
   if(!d) return;
   clear();
+  var g=document.getElementById('zt'+num);
+  if(g) g.classList.add('table-pending');
+  window.__pendingSeatPick={type:type,table:String(num)};
   if(rowEl) rowEl.classList.add('on');
+  document.getElementById('empty').style.display='none';
+  document.getElementById('card').classList.add('on');
+  document.getElementById('stag').textContent=d.tag;
+  var sdescEl=document.getElementById('sdesc');
+  if(type==='booth'){
+    sdescEl.innerHTML='Single seat selection. Option to secure the full booth. <a href="mailto:concierge@madameloulous.com">Inquire within here</a>.';
+  }else{
+    sdescEl.textContent=d.desc;
+  }
+  document.getElementById('sprice').textContent=d.price;
+  document.getElementById('scap').textContent='Choose a seat on the map';
+  pickDisabledRbtn(document.getElementById('rbtn'));
+}
+function scrollSeatIntoZoomStage(seatEl){
+  if(!seatEl||!__mapZoom.open) return;
+  if(!window.matchMedia('(max-width:720px)').matches) return;
+  __mapZoom.open();
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      try{
+        seatEl.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
+      }catch(err){
+        try{ seatEl.scrollIntoView(true); }catch(e2){}
+      }
+    });
+  });
+}
+function pick(type, num, rowEl, seatNum, seatEl){
+  var needsSeat=(type==='salon4'||type==='booth');
+  if(needsSeat){
+    if(!seatNum||seatNum==='') return;
+    if(isUnavailable(type, num, seatNum)) return;
+  }else{
+    if(isUnavailable(type, num)) return;
+  }
+  var d=T[type];
+  if(!d) return;
+  clear();
+  if(rowEl) rowEl.classList.add('on');
+  else if(seatEl) seatEl.classList.add('on');
   else mapHighlight(type, num);
   document.getElementById('empty').style.display='none';
   document.getElementById('card').classList.add('on');
@@ -416,9 +571,16 @@ function pick(type, num, rowEl){
     sdescEl.textContent=d.desc;
   }
   document.getElementById('sprice').textContent=d.price;
-  document.getElementById('scap').textContent=d.cap;
-  document.getElementById('rbtn').href=ticketHref(d.url, type, num);
-  document.getElementById('rbtn').setAttribute('aria-label','Reserve: '+stag);
+  var scapEl=document.getElementById('scap');
+  if(seatNum&&(type==='salon4'||type==='booth')){
+    scapEl.textContent='Table '+num+' · Seat '+seatNum;
+  }else{
+    scapEl.textContent=d.cap;
+  }
+  var rbtn=document.getElementById('rbtn');
+  var href=ticketHref(d.url, type, num, seatNum);
+  pickEnabledRbtn(rbtn, href, 'Continue to checkout: '+stag+(seatNum?' (Table '+num+' seat '+seatNum+')':''));
+  if(needsSeat&&seatEl) scrollSeatIntoZoomStage(seatEl);
 }
 function bindMap(){
   var svg=document.querySelector('svg.fp');
@@ -438,10 +600,47 @@ function bindMap(){
     e.preventDefault();
     var p=hit.getAttribute('data-pick');
     var t=hit.getAttribute('data-table');
-    pick(p, t||null, null);
+    var seat=hit.getAttribute('data-seat');
+    if(p==='salon4'||p==='booth'){
+      if(!seat) return;
+      pick(p, t||null, null, seat, hit);
+    }else{
+      pick(p, t||null, null, null, hit);
+    }
   });
 }
-applySoldState({ga:false,tables:[]});
+function bindMapZoom(){
+  var btn=document.getElementById('mapZoomBtn');
+  var close=document.getElementById('mapZoomClose');
+  var out=document.getElementById('mapZoomOut');
+  if(!btn||!close) return;
+  function openView(){
+    document.body.classList.add('map-zoom-open');
+    btn.setAttribute('aria-expanded','true');
+    btn.setAttribute('hidden','');
+    close.removeAttribute('hidden');
+    if(out) out.removeAttribute('hidden');
+    document.body.style.overflow='hidden';
+  }
+  function closeView(){
+    document.body.classList.remove('map-zoom-open');
+    btn.setAttribute('aria-expanded','false');
+    btn.removeAttribute('hidden');
+    close.setAttribute('hidden','');
+    if(out) out.setAttribute('hidden','');
+    document.body.style.overflow='';
+  }
+  __mapZoom.open=openView;
+  __mapZoom.close=closeView;
+  btn.addEventListener('click',function(e){ e.preventDefault(); openView(); });
+  close.addEventListener('click',closeView);
+  if(out) out.addEventListener('click',function(e){ e.preventDefault(); closeView(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && document.body.classList.contains('map-zoom-open')) closeView();
+  });
+}
+applySoldState({ga:false,tables:[],seats:[]});
+bindMapZoom();
 bindMap();
 fetch(new URL('obscura-sold.json', location.href).toString(), { cache: 'no-store' })
   .then(function(r){ return r.ok ? r.json() : {}; })
@@ -450,12 +649,19 @@ fetch(new URL('obscura-sold.json', location.href).toString(), { cache: 'no-store
 document.querySelectorAll('.js-pick').forEach(function(row){
   function go(){
     if(row.classList.contains('sold')) return;
-    pick(row.getAttribute('data-pick'), row.getAttribute('data-num')||null, row);
+    var pt=row.getAttribute('data-pick');
+    var num=row.getAttribute('data-num')||null;
+    if(pt==='salon4'||pt==='booth'){
+      pickPendingSeat(pt, num, row);
+    }else{
+      pick(pt, num, row, null, null);
+    }
   }
   row.addEventListener('click', go);
   row.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
 });
 window.pick=pick;
+window.pickPendingSeat=pickPendingSeat;
 </script>
 </body>
 </html>
