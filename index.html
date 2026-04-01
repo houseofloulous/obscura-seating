@@ -3,166 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obscura × House of LouLou's — Seating</title>
+<title>Obscura x House of LouLou's</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --cream:#f5f1eb; --navy:#162b3b; --gold:#9a7b47; --border:#d4cec4; --muted:#5c6570; --light:#8b9199; --ui:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
-  body { background:var(--cream); color:var(--navy); font-family:var(--ui); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
-  .page { max-width:1120px; margin:0 auto; padding:2rem 1.25rem 3rem; }
-  .evt-title { font-family:Georgia,'Times New Roman',serif; font-size:clamp(1.45rem,3.5vw,1.95rem); font-weight:400; margin-bottom:.35rem; letter-spacing:-.02em; line-height:1.2; }
-  .evt-date,.subline { font-size:14px; color:var(--muted); }
-  .evt-date { margin-bottom:.65rem; }
-  .subline { margin-bottom:1.5rem; max-width:38rem; }
-  .rule { border:0; border-top:1px solid var(--border); margin-bottom:2rem; }
-  .layout { display:grid; grid-template-columns:1fr minmax(300px,360px); gap:2rem 2.5rem; align-items:start; }
-  @media (max-width:720px){ .layout{ grid-template-columns:1fr; } }
-  .map-wrap { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 1px 8px rgba(22,43,59,.06); padding:12px; }
-  /* Official art: public/obscura-floor-official.png (908×1024) */
-  .plan { position:relative; width:100%; max-width:900px; margin:0 auto; aspect-ratio:908/1024; line-height:0; }
-  .plan-img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; pointer-events:none; }
-  .plan-legend-mask { position:absolute; left:2%; bottom:1.2%; width:42%; height:19%; background:var(--cream); opacity:0.96; pointer-events:none; z-index:1; border-radius:6px; }
-  .hotspots { position:absolute; inset:0; z-index:2; pointer-events:none; }
-  .hot { position:absolute; border:0; background:transparent; border-radius:50%; cursor:pointer; pointer-events:auto; }
-  .hot:focus-visible { outline:2px solid var(--navy); outline-offset:2px; }
-  .hot.on { box-shadow:0 0 0 2px var(--gold), inset 0 0 0 2px rgba(255,255,255,.55); }
-  .sidebar { background:#fff; border:1px solid rgba(22,43,59,.1); border-radius:10px; padding:1.25rem 1.15rem 1.4rem; box-shadow:0 1px 12px rgba(22,43,59,.04); }
-  .sey,.leye { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--light); }
-  .sey { margin-bottom:.45rem; }
-  .sempty { font-size:14px; color:var(--muted); line-height:1.55; }
-  .scard { display:none; } .scard.on { display:block; }
-  .stag { display:inline-block; font-size:12px; font-weight:600; background:var(--navy); color:#fff; padding:6px 11px; margin-bottom:.85rem; border-radius:4px; }
-  .sname { font-size:15px; font-weight:600; margin-bottom:.45rem; }
-  .sdesc { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:1rem; }
-  .sprice { font-size:1.5rem; font-weight:600; margin-bottom:.2rem; }
-  .scap,.rnote { font-size:12px; color:var(--light); }
-  .scap { margin-bottom:1.15rem; }
-  .rbtn { display:block; width:100%; background:var(--navy); color:#fff; border:0; padding:.85rem 1rem; font-size:13px; font-weight:600; text-decoration:none; text-align:center; border-radius:8px; margin-bottom:.45rem; }
-  .leg { margin-top:1.25rem; padding-top:1.1rem; border-top:1px solid rgba(22,43,59,.08); }
-  .leye { margin-bottom:.45rem; }
-  .lrow { display:flex; align-items:center; gap:10px; padding:10px 8px; margin:0 -4px; border-radius:8px; cursor:pointer; border-left:3px solid transparent; min-height:44px; }
-  .lrow.on,.lrow:hover { background:rgba(22,43,59,.06); }
-  .lrow.on { border-left-color:var(--gold); }
-  .lsq { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-  .ln { font-size:14px; font-weight:500; color:var(--muted); flex:1; line-height:1.35; }
-  .lsub { display:block; font-size:12px; color:var(--light); margin-top:3px; }
-  .lp { font-size:14px; font-weight:600; color:var(--navy); }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f5f0eb;font-family:'Helvetica Neue',Arial,sans-serif;}
+.wrap{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
+.evt-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:#1a1a1a;margin-bottom:.3rem;}
+.evt-date{font-size:12px;color:#999;margin-bottom:1.3rem;}
+.steps{display:flex;align-items:center;margin-bottom:1.5rem;}
+.stp{font-size:11px;font-weight:500;color:#1a1a1a;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.stp.dim{color:#ccc;font-weight:400;}
+.sdot{width:7px;height:7px;border-radius:50%;background:#1a1a1a;flex-shrink:0;}
+.sdot.dim{background:#ddd;}
+.sline{flex:1;height:1px;background:#ddd;margin:0 10px;}
+.rule{border:none;border-top:1px solid #ddd;margin-bottom:1.5rem;}
+.layout{display:grid;grid-template-columns:1fr 230px;gap:2.5rem;align-items:start;}
+@media(max-width:660px){.layout{grid-template-columns:1fr;}}
+.vey{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:#aaa;margin-bottom:.5rem;}
+svg.fp{width:100%;height:auto;display:block;}
+.z{cursor:pointer;}.z .mc{transition:opacity .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
+.lkey{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:.6rem;}
+.lki{display:flex;align-items:center;gap:4px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#999;}
+.lkd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sey{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:#aaa;margin-bottom:1rem;}
+.sempty{font-size:11px;color:#ccc;line-height:1.9;}
+.scard{display:none;}.scard.on{display:block;}
+.stag{display:inline-block;font-size:7px;letter-spacing:.2em;text-transform:uppercase;background:#1a1a1a;color:#f5f0eb;padding:3px 9px;margin-bottom:.7rem;}
+.sname{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#1a1a1a;margin-bottom:.4rem;}
+.sdesc{font-size:11px;color:#888;line-height:1.85;margin-bottom:1rem;}
+.sprice{font-family:'Playfair Display',serif;font-size:1.7rem;color:#1a1a1a;margin-bottom:.15rem;}
+.scap{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#ccc;margin-bottom:1.5rem;}
+.rbtn{display:block;width:100%;background:#162B3B;color:#f5f0eb;border:none;padding:13px 0;font-size:8px;letter-spacing:.32em;text-transform:uppercase;cursor:pointer;transition:background .15s;margin-bottom:.4rem;text-align:center;text-decoration:none;}
+.rbtn:hover{background:#1e3d52;}
+.rnote{font-size:8px;color:#ccc;text-align:center;}
+.leg{margin-top:1.8rem;padding-top:1.4rem;border-top:1px solid #e8e3dc;}
+.leye{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:#bbb;margin-bottom:.6rem;}
+.lrow{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:.5px solid #ede8e1;cursor:pointer;}
+.lrow:hover .ln{color:#1a1a1a;}
+.lsq{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ln{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#888;flex:1;}
+.lp{font-size:8px;color:#ccc;}
 </style>
 </head>
 <body>
-<main class="page">
-  <h1 class="evt-title">Obscura × House of LouLou's</h1>
-  <p class="evt-date">Sat, May 2, 2026 · 8:00 PM EDT · Red Pavilion, New York City</p>
-  <p class="subline">Tap a table on the map, or a ticket type in the sidebar.</p>
-  <hr class="rule">
-  <div class="layout">
-    <div>
-      <div class="map-wrap">
-        <div class="plan">
-          <img class="plan-img" src="obscura-floor-official.png" width="908" height="1024" alt="Red Pavilion floor plan"/>
-          <div class="plan-legend-mask" aria-hidden="true"></div>
-          <div class="hotspots" id="hotspots-root"></div>
-        </div>
-      </div>
-    </div>
-    <aside class="sidebar" aria-label="Ticket selection">
-      <div class="sey">Your selection</div>
-      <div id="empty" class="sempty">Tap the map or a type below.</div>
-      <div id="card" class="scard">
-        <div class="stag" id="stag"></div><div class="sname" id="sname"></div><div class="sdesc" id="sdesc"></div><div class="sprice" id="sprice"></div><div class="scap" id="scap"></div>
-        <a class="rbtn" id="rbtn" href="#" target="_blank" rel="noopener">Reserve</a><div class="rnote">Completes on houseofloulous.com</div>
-      </div>
-      <div class="leg">
-        <div class="leye">Browse by type</div>
-        <div class="lrow js-pick" data-pick="ga" role="button" tabindex="0"><div class="lsq" style="background:#8fa3b0"></div><span class="ln">General Admission<span class="lsub">Standing Room</span></span><span class="lp">$70</span></div>
-        <div class="lrow js-pick" data-pick="salon2" data-num="18" role="button" tabindex="0"><div class="lsq" style="background:#c8c2b8;border:1px solid #c9a96e"></div><span class="ln">Salon Table for 2<span class="lsub">Whole Table</span></span><span class="lp">$300</span></div>
-        <div class="lrow js-pick" data-pick="salon4" data-num="Table 8 · Seat A" role="button" tabindex="0"><div class="lsq" style="background:#c9a96e"></div><span class="ln">Salon Table for 4<span class="lsub">Single Seat Selection</span></span><span class="lp">$225</span></div>
-        <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#162b3b"></div><span class="ln">Madame's Booth for 6–8<span class="lsub">Single seat $300 · Full booth $1,800</span></span><span class="lp">$300</span></div>
-        <div class="lrow js-pick" data-pick="intimate" data-num="Table 19 · Seat A" role="button" tabindex="0"><div class="lsq" style="background:#c8c2b8;border:1px solid #162b3b"></div><span class="ln">Intimate Stage Table for 2<span class="lsub">Single Seat Selection</span></span><span class="lp">$350</span></div>
-      </div>
-    </aside>
-  </div>
-</main>
+<div class="wrap">
+<div class="evt-title">Obscura x House of LouLou's</div>
+<div class="evt-date">Sat, 2 May 2026, 8:00 PM EDT &nbsp;·&nbsp; Red Pavilion, New York City</div>
+<div class="steps">
+  <div class="stp"><div class="sdot"></div>Tickets</div>
+  <div class="sline"></div>
+  <div class="stp dim"><div class="sdot dim"></div>Your info</div>
+  <div class="sline"></div>
+  <div class="stp dim"><div class="sdot dim"></div>Payment</div>
+</div>
+<hr class="rule">
+<div class="layout">
+<div>
+<div class="vey">Red Pavilion &nbsp;·&nbsp; tap a table to select</div>
+<svg class="fp" viewBox="0 0 780 920" xmlns="http://www.w3.org/2000/svg">
+
+  <rect x="0" y="0" width="780" height="920" fill="#ede8e0"/>
+
+  <!-- Bar -->
+  <rect x="690" y="30" width="82" height="660" rx="2" fill="#d4cec6" stroke="#bbb" stroke-width="1"/>
+  <text x="731" y="365" text-anchor="middle" font-size="11" fill="#aaa" transform="rotate(90,731,365)" style="pointer-events:none">BAR</text>
+
+  <!-- GA -->
+  <path d="M 340 40 L 665 40 L 665 641 L 578 641 L 578 118 L 340 118 Z" fill="#dce8d4" stroke="#a8c09a" stroke-width="1.5"/>
+  <text x="490" y="76" text-anchor="middle" font-size="13" letter-spacing="2" fill="#5a8050" font-weight="500" style="pointer-events:none">GENERAL ADMISSION</text>
+  <text x="490" y="94" text-anchor="middle" font-size="9" fill="#8ab07a" style="pointer-events:none">Standing room only · $70</text>
+  <rect x="340" y="40" width="325" height="601" fill="transparent" class="z" onclick="pick('ga',null)" id="zga"/>
+
+  <!-- Exit -->
+  <rect x="22" y="32" width="100" height="52" rx="2" fill="none" stroke="#ccc" stroke-width="1"/>
+  <text x="72" y="54" text-anchor="middle" font-size="10" fill="#bbb" style="pointer-events:none">↑</text>
+  <text x="72" y="73" text-anchor="middle" font-size="9" letter-spacing="1" fill="#bbb" style="pointer-events:none">EXIT</text>
+  <text x="718" y="22" font-size="13" fill="#bbb" style="pointer-events:none">🚻</text>
+
+  <!-- Stage -->
+  <path d="M 80 920 Q 390 800 700 920 Z" fill="#2a2520"/>
+  <text x="390" y="876" text-anchor="middle" font-size="13" letter-spacing="4" fill="#f5f0eb" style="pointer-events:none">STAGE</text>
+
+  <!-- BOOTH 17: clean ellipse, 6 dots LEFT SIDE -->
+  <g class="z" id="zt17" onclick="pick('booth','17')">
+    <ellipse class="mc" cx="150" cy="335" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2"/>
+    <circle class="mc" cx="116" cy="411" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="95" cy="387" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="83" cy="353" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="83" cy="317" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="95" cy="283" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="116" cy="259" r="10" fill="#5878c8"/>
+    <text x="150" y="340" text-anchor="middle" font-size="14" fill="#3a5090" font-weight="600" style="pointer-events:none">17</text>
+  </g>
+
+  <!-- BOOTH 16: clean ellipse, 6 dots LEFT SIDE -->
+  <g class="z" id="zt16" onclick="pick('booth','16')">
+    <ellipse class="mc" cx="150" cy="648" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2"/>
+    <circle class="mc" cx="116" cy="724" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="95" cy="700" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="83" cy="666" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="83" cy="630" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="95" cy="596" r="10" fill="#5878c8"/>
+    <circle class="mc" cx="116" cy="572" r="10" fill="#5878c8"/>
+    <text x="150" y="653" text-anchor="middle" font-size="14" fill="#3a5090" font-weight="600" style="pointer-events:none">16</text>
+  </g>
+
+  <!-- ROW 0 cy=148: two-top seats at cx±16, cy-18 -->
+  <g class="z" id="zt18" onclick="pick('salon2','18')">
+    <circle class="mc" cx="280" cy="148" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="264" cy="130" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="296" cy="130" r="9" fill="#e8a0b0"/>
+    <text x="280" y="153" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">18</text>
+  </g>
+  <g class="z" id="zt13" onclick="pick('salon2','13')">
+    <circle class="mc" cx="360" cy="148" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="344" cy="130" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="376" cy="130" r="9" fill="#e8a0b0"/>
+    <text x="360" y="153" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">13</text>
+  </g>
+  <g class="z" id="zt14" onclick="pick('salon2','14')">
+    <circle class="mc" cx="450" cy="148" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="434" cy="130" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="466" cy="130" r="9" fill="#e8a0b0"/>
+    <text x="450" y="153" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">14</text>
+  </g>
+  <g class="z" id="zt15" onclick="pick('salon2','15')">
+    <circle class="mc" cx="535" cy="148" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="519" cy="130" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="551" cy="130" r="9" fill="#e8a0b0"/>
+    <text x="535" y="153" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">15</text>
+  </g>
+
+  <!-- ROW B cy=259: four-tops, seats at cx±22 cy±20 -->
+  <g class="z" id="zt10" onclick="pick('salon4','10')">
+    <circle class="mc" cx="310" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="288" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="332" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="288" cy="245" r="10" fill="#d89830"/>
+    <circle class="mc" cx="332" cy="245" r="10" fill="#d89830"/>
+    <text x="310" y="230" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">10</text>
+  </g>
+  <g class="z" id="zt11" onclick="pick('salon4','11')">
+    <circle class="mc" cx="398" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="376" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="376" cy="245" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="245" r="10" fill="#d89830"/>
+    <text x="398" y="230" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">11</text>
+  </g>
+  <g class="z" id="zt12" onclick="pick('salon4','12')">
+    <circle class="mc" cx="486" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="464" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="508" cy="205" r="10" fill="#d89830"/>
+    <circle class="mc" cx="464" cy="245" r="10" fill="#d89830"/>
+    <circle class="mc" cx="508" cy="245" r="10" fill="#d89830"/>
+    <text x="486" y="230" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">12</text>
+  </g>
+
+  <!-- DINNER TABLE STAGE: y=327, h=60, thick -->
+  <rect x="290" y="327" width="230" height="60" rx="4" fill="#3a3530"/>
+  <text x="405" y="362" text-anchor="middle" font-size="9" letter-spacing="1.5" fill="#f5f0eb" style="pointer-events:none">DINNER TABLE STAGE</text>
+
+  <!-- T21: ON north edge (cy=327) west end -->
+  <g class="z" id="zt21" onclick="pick('intimate','21')">
+    <circle class="mc" cx="314" cy="303" r="24" fill="#7a68a8" stroke="#584888" stroke-width="1.5"/>
+    <circle class="mc" cx="298" cy="285" r="9" fill="#9880c8"/>
+    <circle class="mc" cx="330" cy="285" r="9" fill="#9880c8"/>
+    <text x="314" y="308" text-anchor="middle" font-size="11" fill="white" font-weight="600" style="pointer-events:none">21</text>
+  </g>
+
+  <!-- T22: ON south edge (cy=387) west end -->
+  <g class="z" id="zt22" onclick="pick('intimate','22')">
+    <circle class="mc" cx="314" cy="411" r="24" fill="#7a68a8" stroke="#584888" stroke-width="1.5"/>
+    <circle class="mc" cx="298" cy="429" r="9" fill="#9880c8"/>
+    <circle class="mc" cx="330" cy="429" r="9" fill="#9880c8"/>
+    <text x="314" y="416" text-anchor="middle" font-size="11" fill="white" font-weight="600" style="pointer-events:none">22</text>
+  </g>
+
+  <!-- ROW C cy=479 -->
+  <g class="z" id="zt7" onclick="pick('salon4','7')">
+    <circle class="mc" cx="310" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="288" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="332" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="288" cy="530" r="10" fill="#d89830"/>
+    <circle class="mc" cx="332" cy="530" r="10" fill="#d89830"/>
+    <text x="310" y="515" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">7</text>
+  </g>
+  <g class="z" id="zt8" onclick="pick('salon4','8')">
+    <circle class="mc" cx="398" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="376" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="376" cy="530" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="530" r="10" fill="#d89830"/>
+    <text x="398" y="515" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">8</text>
+  </g>
+  <g class="z" id="zt9" onclick="pick('salon4','9')">
+    <circle class="mc" cx="486" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="464" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="508" cy="490" r="10" fill="#d89830"/>
+    <circle class="mc" cx="464" cy="530" r="10" fill="#d89830"/>
+    <circle class="mc" cx="508" cy="530" r="10" fill="#d89830"/>
+    <text x="486" y="515" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">9</text>
+  </g>
+
+  <!-- T6 cy=575 -->
+  <g class="z" id="zt6" onclick="pick('salon4','6')">
+    <circle class="mc" cx="398" cy="606" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2"/>
+    <circle class="mc" cx="376" cy="586" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="586" r="10" fill="#d89830"/>
+    <circle class="mc" cx="376" cy="626" r="10" fill="#d89830"/>
+    <circle class="mc" cx="420" cy="626" r="10" fill="#d89830"/>
+    <text x="398" y="611" text-anchor="middle" font-size="12" fill="#4a4038" font-weight="600" style="pointer-events:none">6</text>
+  </g>
+
+  <!-- ROW D cy=667 -->
+  <g class="z" id="zt5" onclick="pick('salon2','5')">
+    <circle class="mc" cx="345" cy="698" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="329" cy="680" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="361" cy="680" r="9" fill="#e8a0b0"/>
+    <text x="345" y="703" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">5</text>
+  </g>
+  <g class="z" id="zt4" onclick="pick('salon2','4')">
+    <circle class="mc" cx="475" cy="698" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="459" cy="680" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="491" cy="680" r="9" fill="#e8a0b0"/>
+    <text x="475" y="703" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">4</text>
+  </g>
+
+  <!-- ROW E cy=740 -->
+  <g class="z" id="zt3" onclick="pick('intimate','3')">
+    <circle class="mc" cx="345" cy="771" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="329" cy="753" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="361" cy="753" r="9" fill="#e8a0b0"/>
+    <text x="345" y="776" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">3</text>
+  </g>
+  <g class="z" id="zt2" onclick="pick('intimate','2')">
+    <circle class="mc" cx="475" cy="771" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="459" cy="753" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="491" cy="753" r="9" fill="#e8a0b0"/>
+    <text x="475" y="776" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">2</text>
+  </g>
+
+  <!-- T1 cy=795 -->
+  <g class="z" id="zt1" onclick="pick('salon2','1')">
+    <circle class="mc" cx="570" cy="826" r="24" fill="#c04560" stroke="#902840" stroke-width="1.5"/>
+    <circle class="mc" cx="554" cy="808" r="9" fill="#e8a0b0"/>
+    <circle class="mc" cx="586" cy="808" r="9" fill="#e8a0b0"/>
+    <text x="570" y="831" text-anchor="middle" font-size="12" fill="white" font-weight="600" style="pointer-events:none">1</text>
+  </g>
+
+  <!-- T19 & T20 -->
+
+</svg>
+<div class="lkey">
+  <div class="lki"><div class="lkd" style="background:#5a8050"></div>GA Standing Room · $70</div>
+  <div class="lki"><div class="lkd" style="background:#7a68a8"></div>Intimate Stage for 2 · $350/seat</div>
+  <div class="lki"><div class="lkd" style="background:#c04560"></div>Salon Table for 2 · $300</div>
+  <div class="lki"><div class="lkd" style="background:#d89830"></div>Salon Table for 4 · $225/seat</div>
+  <div class="lki"><div class="lkd" style="background:#5878c8"></div>Madame's Booth · $300/seat</div>
+  
+</div>
+</div>
+<div>
+<div class="sey">Your selection</div>
+<div id="empty" class="sempty">Tap any table or the GA floor to see details and reserve.</div>
+<div id="card" class="scard">
+  <div class="stag" id="stag"></div>
+  <div class="sname" id="sname"></div>
+  <div class="sdesc" id="sdesc"></div>
+  <div class="sprice" id="sprice"></div>
+  <div class="scap" id="scap"></div>
+  <a class="rbtn" id="rbtn" href="#" target="_blank" rel="noopener">Reserve →</a>
+  <div class="rnote">Completes on houseofloulous.com</div>
+</div>
+<div class="leg">
+  <div class="leye">All ticket types</div>
+  <div class="lrow" onclick="pick('ga',null)"><div class="lsq" style="background:#5a8050"></div><span class="ln">General Admission</span><span class="lp">$70</span></div>
+  <div class="lrow" onclick="pick('salon2','13')"><div class="lsq" style="background:#c04560"></div><span class="ln">Salon Table for 2</span><span class="lp">$300</span></div>
+  <div class="lrow" onclick="pick('salon4','8')"><div class="lsq" style="background:#d89830"></div><span class="ln">Salon Table for 4</span><span class="lp">$225/seat</span></div>
+  <div class="lrow" onclick="pick('booth','16')"><div class="lsq" style="background:#5878c8"></div><span class="ln">Madame's Booth for 6</span><span class="lp">$300/seat</span></div>
+  <div class="lrow" onclick="pick('intimate','21')"><div class="lsq" style="background:#7a68a8"></div><span class="ln">Intimate Stage Table for 2</span><span class="lp">$350/seat</span></div>
+</div>
+</div>
+</div>
+</div>
 <script>
-(function(){
-  /* Percent of .plan — tuned to obscura-floor-official.png (908×1024). 19 & 20 = Intimate (column with 18). */
-  var spots = [
-    {pick:'ga',left:36.2,top:5.6,w:44.0,h:8.8},
-    {pick:'ga',left:81.7,top:11.0,w:12.4,h:67.5},
-    {pick:'booth',num:'17',left:8.5,top:25.3,w:17.1,h:17.9},
-    {pick:'booth',num:'16',left:8.6,top:54.8,w:17.2,h:14.9},
-    {pick:'salon2',num:'18',left:27.6,top:31.7,w:6.2,h:5.4},
-    {pick:'intimate',num:'19',left:27.6,top:40.8,w:6.2,h:5.4},
-    {pick:'intimate',num:'20',left:27.6,top:50.1,w:6.2,h:5.4},
-    {pick:'salon4',num:'13',left:38.0,top:31.8,w:6.4,h:5.6},
-    {pick:'salon4',num:'14',left:50.8,top:31.8,w:6.4,h:5.6},
-    {pick:'salon4',num:'15',left:63.5,top:31.8,w:6.4,h:5.6},
-    {pick:'salon4',num:'10',left:39.8,top:40.9,w:6.4,h:5.6},
-    {pick:'salon4',num:'11',left:52.5,top:40.9,w:6.4,h:5.6},
-    {pick:'salon4',num:'12',left:65.2,top:40.9,w:6.4,h:5.6},
-    {pick:'salon4',num:'7',left:41.5,top:50.2,w:6.4,h:5.6},
-    {pick:'salon4',num:'8',left:54.2,top:50.2,w:6.4,h:5.6},
-    {pick:'salon4',num:'9',left:67.0,top:50.2,w:6.4,h:5.6},
-    {pick:'salon4',num:'6',left:54.2,top:59.5,w:6.4,h:5.6},
-    {pick:'intimate',num:'5',left:46.4,top:67.4,w:5.8,h:5.1},
-    {pick:'intimate',num:'4',left:59.5,top:67.4,w:5.8,h:5.1},
-    {pick:'intimate',num:'3',left:46.4,top:86.0,w:5.8,h:5.1},
-    {pick:'intimate',num:'2',left:59.5,top:86.0,w:5.8,h:5.1},
-    {pick:'intimate',num:'1',left:72.2,top:87.3,w:5.8,h:5.1}
-  ];
-  var tickets = {
-    ga:{tag:'General Admission',desc:'Standing room on the GA floor with full access to the evening.',price:'$70',cap:'Standing Room',url:'https://www.houseofloulous.com/obscurastickets/p/ga'},
-    intimate:{tag:'Intimate Stage Table for 2',desc:'Single seat at an intimate stage table for two.',price:'$350',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat'},
-    salon2:{tag:'Salon Table for 2',desc:'A private reserved table for two.',price:'$300',cap:'Whole Table',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor2'},
-    salon4:{tag:'Salon Table for 4',desc:'A single seat at a shared salon table for four.',price:'$225',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor4'},
-    booth:{tag:"Madame's Booth for 6–8",desc:'Single seat selection · $300 per seat. Full private booth (6–8 guests) · $1,800.',price:'$300',cap:'Single Seat Selection · full booth $1,800',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
-  };
-  var root = document.getElementById('hotspots-root');
-  spots.forEach(function(s){
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'hot';
-    b.dataset.pick = s.pick;
-    if (s.num) b.dataset.num = s.num;
-    b.style.left = s.left + '%';
-    b.style.top = s.top + '%';
-    b.style.width = s.w + '%';
-    b.style.height = s.h + '%';
-    b.setAttribute('aria-label', s.pick === 'ga' ? 'General admission' : ('Table ' + s.num));
-    root.appendChild(b);
-  });
-  function clear(){
-    document.querySelectorAll('.hot.on,.lrow.on').forEach(function(e){ e.classList.remove('on'); });
-  }
-  function pick(type, num, btn, row){
-    var d = tickets[type];
-    if (!d) return;
-    clear();
-    if (btn) btn.classList.add('on');
-    if (row) row.classList.add('on');
-    document.getElementById('empty').style.display = 'none';
-    document.getElementById('card').classList.add('on');
-    var stag = d.tag;
-    if (num) {
-      if (/Seat/.test(String(num))) stag = num;
-      else if (type === 'booth') stag = "Madame's Booth " + num;
-      else stag = 'Table ' + num;
-    }
-    document.getElementById('stag').textContent = stag;
-    document.getElementById('sname').textContent = d.tag;
-    document.getElementById('sdesc').textContent = d.desc;
-    document.getElementById('sprice').textContent = d.price;
-    document.getElementById('scap').textContent = d.cap;
-    document.getElementById('rbtn').href = d.url;
-  }
-  document.querySelectorAll('.hot').forEach(function(btn){
-    btn.addEventListener('click', function(){ pick(btn.dataset.pick, btn.dataset.num || null, btn, null); });
-  });
-  document.querySelectorAll('.js-pick').forEach(function(row){
-    function go(){ pick(row.dataset.pick, row.dataset.num || null, null, row); }
-    row.addEventListener('click', go);
-    row.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
-  });
-})();
+const T={
+  ga:{tag:"General Admission",name:"Open Floor",desc:"Standing room on the GA floor with full access to the evening.",price:"$70",cap:"Standing room · individual ticket",url:"https://www.houseofloulous.com/obscurastickets/p/ga"},
+  intimate:{tag:"Intimate Stage Table Seat",name:"Closest to the Stage",desc:"A reserved seat at a table positioned directly at the stage.",price:"$350",cap:"Single seat selection",url:"https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat"},
+  salon2:{tag:"Salon Table for 2",name:"Reserved Table · 2 Guests",desc:"A private reserved table for two on the main floor.",price:"$300",cap:"Whole table · 2 guests",url:"https://www.houseofloulous.com/obscurastickets/p/tablefor2"},
+  salon4:{tag:"Salon Table for 4",name:"Reserved Table · 4 Guests",desc:"A reserved table for four with excellent sightlines.",price:"$225",cap:"Single seat selection",url:"https://www.houseofloulous.com/obscurastickets/p/tablefor4"},
+  booth:{tag:"Madame's Booth for 6",name:"Private Booth · 6 Guests",desc:"The most coveted placement. A private booth for six.",price:"$300",cap:"Single seat selection",url:"https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6"},
+};
+function pick(type,num){
+  const d=T[type];
+  document.querySelectorAll('.z').forEach(el=>el.classList.remove('on'));
+  if(num) document.getElementById('zt'+num)?.classList.add('on');
+  else document.getElementById('zga')?.classList.add('on');
+  document.getElementById('empty').style.display='none';
+  document.getElementById('card').classList.add('on');
+  document.getElementById('stag').textContent=num?'Table '+num:d.tag;
+  document.getElementById('sname').textContent=d.tag;
+  document.getElementById('sdesc').textContent=d.desc;
+  document.getElementById('sprice').textContent=d.price;
+  document.getElementById('scap').textContent=d.cap;
+  document.getElementById('rbtn').href=d.url;
+}
 </script>
 </body>
 </html>
