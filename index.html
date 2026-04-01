@@ -16,15 +16,15 @@
   .rule { border:0; border-top:1px solid var(--border); margin-bottom:2rem; }
   .layout { display:grid; grid-template-columns:1fr minmax(300px,360px); gap:2rem 2.5rem; align-items:start; }
   @media (max-width:720px){ .layout{ grid-template-columns:1fr; } }
-  .map-wrap { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 1px 8px rgba(22,43,59,.06); }
+  .map-wrap { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 1px 8px rgba(22,43,59,.06); padding:12px; }
+  /* Official art: public/obscura-floor-official.png (908×1024) */
   .plan { position:relative; width:100%; max-width:900px; margin:0 auto; aspect-ratio:908/1024; line-height:0; }
   .plan-img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; pointer-events:none; }
+  .plan-legend-mask { position:absolute; left:2%; bottom:1.2%; width:42%; height:19%; background:var(--cream); opacity:0.96; pointer-events:none; z-index:1; border-radius:6px; }
   .hotspots { position:absolute; inset:0; z-index:2; pointer-events:none; }
   .hot { position:absolute; border:0; background:transparent; border-radius:50%; cursor:pointer; pointer-events:auto; }
   .hot:focus-visible { outline:2px solid var(--navy); outline-offset:2px; }
-  .hot.on { box-shadow:0 0 0 2px var(--gold), inset 0 0 0 2px rgba(255,255,255,.7); }
-  .shape { transition:all .12s ease; }
-  .shape.on { stroke:#162b3b; stroke-width:3; }
+  .hot.on { box-shadow:0 0 0 2px var(--gold), inset 0 0 0 2px rgba(255,255,255,.55); }
   .sidebar { background:#fff; border:1px solid rgba(22,43,59,.1); border-radius:10px; padding:1.25rem 1.15rem 1.4rem; box-shadow:0 1px 12px rgba(22,43,59,.04); }
   .sey,.leye { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--light); }
   .sey { margin-bottom:.45rem; }
@@ -58,7 +58,8 @@
     <div>
       <div class="map-wrap">
         <div class="plan">
-          <img class="plan-img" src="obscura-floor-plan-reference.png" width="800" height="800" alt="Obscura floor plan"/>
+          <img class="plan-img" src="obscura-floor-official.png" width="908" height="1024" alt="Red Pavilion floor plan"/>
+          <div class="plan-legend-mask" aria-hidden="true"></div>
           <div class="hotspots" id="hotspots-root"></div>
         </div>
       </div>
@@ -75,22 +76,23 @@
         <div class="lrow js-pick" data-pick="ga" role="button" tabindex="0"><div class="lsq" style="background:#8fa3b0"></div><span class="ln">General Admission<span class="lsub">Standing Room</span></span><span class="lp">$70</span></div>
         <div class="lrow js-pick" data-pick="salon2" data-num="18" role="button" tabindex="0"><div class="lsq" style="background:#c8c2b8;border:1px solid #c9a96e"></div><span class="ln">Salon Table for 2<span class="lsub">Whole Table</span></span><span class="lp">$300</span></div>
         <div class="lrow js-pick" data-pick="salon4" data-num="Table 8 · Seat A" role="button" tabindex="0"><div class="lsq" style="background:#c9a96e"></div><span class="ln">Salon Table for 4<span class="lsub">Single Seat Selection</span></span><span class="lp">$225</span></div>
-        <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#162b3b"></div><span class="ln">Madame's Booth for 6–8<span class="lsub">Single seat · $300 per seat</span></span><span class="lp">$300</span></div>
-        <div class="lrow js-pick" data-pick="intimate" data-num="Table 4 · Seat A" role="button" tabindex="0"><div class="lsq" style="background:#c8c2b8;border:1px solid #162b3b"></div><span class="ln">Intimate Stage Table for 2<span class="lsub">Single Seat Selection</span></span><span class="lp">$350</span></div>
+        <div class="lrow js-pick" data-pick="booth" data-num="16" role="button" tabindex="0"><div class="lsq" style="background:#162b3b"></div><span class="ln">Madame's Booth for 6–8<span class="lsub">Single seat $300 · Full booth $1,800</span></span><span class="lp">$300</span></div>
+        <div class="lrow js-pick" data-pick="intimate" data-num="Table 19 · Seat A" role="button" tabindex="0"><div class="lsq" style="background:#c8c2b8;border:1px solid #162b3b"></div><span class="ln">Intimate Stage Table for 2<span class="lsub">Single Seat Selection</span></span><span class="lp">$350</span></div>
       </div>
     </aside>
   </div>
 </main>
 <script>
 (function(){
+  /* Percent of .plan — tuned to obscura-floor-official.png (908×1024). 19 & 20 = Intimate (column with 18). */
   var spots = [
     {pick:'ga',left:36.2,top:5.6,w:44.0,h:8.8},
     {pick:'ga',left:81.7,top:11.0,w:12.4,h:67.5},
     {pick:'booth',num:'17',left:8.5,top:25.3,w:17.1,h:17.9},
     {pick:'booth',num:'16',left:8.6,top:54.8,w:17.2,h:14.9},
     {pick:'salon2',num:'18',left:27.6,top:31.7,w:6.2,h:5.4},
-    {pick:'salon2',num:'19',left:27.6,top:40.8,w:6.2,h:5.4},
-    {pick:'salon2',num:'20',left:27.6,top:50.1,w:6.2,h:5.4},
+    {pick:'intimate',num:'19',left:27.6,top:40.8,w:6.2,h:5.4},
+    {pick:'intimate',num:'20',left:27.6,top:50.1,w:6.2,h:5.4},
     {pick:'salon4',num:'13',left:38.0,top:31.8,w:6.4,h:5.6},
     {pick:'salon4',num:'14',left:50.8,top:31.8,w:6.4,h:5.6},
     {pick:'salon4',num:'15',left:63.5,top:31.8,w:6.4,h:5.6},
@@ -103,27 +105,63 @@
     {pick:'salon4',num:'6',left:54.2,top:59.5,w:6.4,h:5.6},
     {pick:'intimate',num:'5',left:46.4,top:67.4,w:5.8,h:5.1},
     {pick:'intimate',num:'4',left:59.5,top:67.4,w:5.8,h:5.1},
+    {pick:'intimate',num:'3',left:46.4,top:86.0,w:5.8,h:5.1},
+    {pick:'intimate',num:'2',left:59.5,top:86.0,w:5.8,h:5.1},
     {pick:'intimate',num:'1',left:72.2,top:87.3,w:5.8,h:5.1}
   ];
   var tickets = {
     ga:{tag:'General Admission',desc:'Standing room on the GA floor with full access to the evening.',price:'$70',cap:'Standing Room',url:'https://www.houseofloulous.com/obscurastickets/p/ga'},
-    intimate:{tag:'Intimate Stage Table for 2',desc:'A reserved seat at an intimate stage table for two.',price:'$350',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat'},
+    intimate:{tag:'Intimate Stage Table for 2',desc:'Single seat at an intimate stage table for two.',price:'$350',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/intimatestagetableseat'},
     salon2:{tag:'Salon Table for 2',desc:'A private reserved table for two.',price:'$300',cap:'Whole Table',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor2'},
     salon4:{tag:'Salon Table for 4',desc:'A single seat at a shared salon table for four.',price:'$225',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/tablefor4'},
-    booth:{tag:"Madame's Booth for 6–8",desc:'Single seat selection · $300 per seat at a private curved booth (seats 6–8).',price:'$300',cap:'Single Seat Selection',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
+    booth:{tag:"Madame's Booth for 6–8",desc:'Single seat selection · $300 per seat. Full private booth (6–8 guests) · $1,800.',price:'$300',cap:'Single Seat Selection · full booth $1,800',url:'https://www.houseofloulous.com/obscurastickets/p/madames-booth-for-6'}
   };
-  var root=document.getElementById('hotspots-root');
-  spots.forEach(function(s){ var b=document.createElement('button'); b.type='button'; b.className='hot'; b.dataset.pick=s.pick; if(s.num)b.dataset.num=s.num; b.style.left=s.left+'%'; b.style.top=s.top+'%'; b.style.width=s.w+'%'; b.style.height=s.h+'%'; root.appendChild(b);});
-  function clear(){ document.querySelectorAll('.hot.on,.lrow.on').forEach(function(e){e.classList.remove('on');}); }
-  function pick(type,num,btn,row){
-    var d=tickets[type]; if(!d)return; clear(); if(btn)btn.classList.add('on'); if(row)row.classList.add('on');
-    document.getElementById('empty').style.display='none'; document.getElementById('card').classList.add('on');
-    var stag=d.tag; if(num){ if(/Seat/.test(num))stag=num; else if(type==='booth')stag="Madame's Booth "+num; else stag='Table '+num; }
-    document.getElementById('stag').textContent=stag; document.getElementById('sname').textContent=d.tag; document.getElementById('sdesc').textContent=d.desc;
-    document.getElementById('sprice').textContent=d.price; document.getElementById('scap').textContent=d.cap; document.getElementById('rbtn').href=d.url;
+  var root = document.getElementById('hotspots-root');
+  spots.forEach(function(s){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'hot';
+    b.dataset.pick = s.pick;
+    if (s.num) b.dataset.num = s.num;
+    b.style.left = s.left + '%';
+    b.style.top = s.top + '%';
+    b.style.width = s.w + '%';
+    b.style.height = s.h + '%';
+    b.setAttribute('aria-label', s.pick === 'ga' ? 'General admission' : ('Table ' + s.num));
+    root.appendChild(b);
+  });
+  function clear(){
+    document.querySelectorAll('.hot.on,.lrow.on').forEach(function(e){ e.classList.remove('on'); });
   }
-  document.querySelectorAll('.hot').forEach(function(btn){ btn.addEventListener('click',function(){ pick(btn.dataset.pick,btn.dataset.num||null,btn,null); }); });
-  document.querySelectorAll('.js-pick').forEach(function(row){ var go=function(){ pick(row.dataset.pick,row.dataset.num||null,null,row); }; row.addEventListener('click',go); row.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}}); });
+  function pick(type, num, btn, row){
+    var d = tickets[type];
+    if (!d) return;
+    clear();
+    if (btn) btn.classList.add('on');
+    if (row) row.classList.add('on');
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('card').classList.add('on');
+    var stag = d.tag;
+    if (num) {
+      if (/Seat/.test(String(num))) stag = num;
+      else if (type === 'booth') stag = "Madame's Booth " + num;
+      else stag = 'Table ' + num;
+    }
+    document.getElementById('stag').textContent = stag;
+    document.getElementById('sname').textContent = d.tag;
+    document.getElementById('sdesc').textContent = d.desc;
+    document.getElementById('sprice').textContent = d.price;
+    document.getElementById('scap').textContent = d.cap;
+    document.getElementById('rbtn').href = d.url;
+  }
+  document.querySelectorAll('.hot').forEach(function(btn){
+    btn.addEventListener('click', function(){ pick(btn.dataset.pick, btn.dataset.num || null, btn, null); });
+  });
+  document.querySelectorAll('.js-pick').forEach(function(row){
+    function go(){ pick(row.dataset.pick, row.dataset.num || null, null, row); }
+    row.addEventListener('click', go);
+    row.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+  });
 })();
 </script>
 </body>
