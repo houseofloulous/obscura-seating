@@ -4,17 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Obscura × House of LouLou's</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;}
-body{background:#f5f0eb;font-family:'Instrument Serif',Georgia,serif;color:#1a1a1a;line-height:1.5;-webkit-font-smoothing:antialiased;}
+html{font-size:17px;}
+body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-height:1.55;-webkit-font-smoothing:antialiased;}
 .wrap{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem;}
-.evt-title{font-size:clamp(1.5rem,4vw,2rem);font-weight:400;color:#111;margin-bottom:.4rem;line-height:1.15;}
-.evt-date{font-size:15px;color:#333;line-height:1.5;font-weight:500;margin-bottom:.35rem;}
-.evt-schedule{font-size:15px;color:#222;line-height:1.55;font-weight:500;margin-bottom:1.35rem;max-width:38rem;}
+.evt-title,.evt-date,.evt-schedule{font-family:'Instrument Serif',serif;}
+.evt-title{font-size:clamp(1.55rem,4vw,2.1rem);font-weight:400;color:#0d0d0d;margin-bottom:.45rem;line-height:1.2;}
+.evt-date{font-size:1.05rem;color:#1a1a1a;line-height:1.55;font-weight:400;margin-bottom:.4rem;}
+.evt-schedule{font-size:1.05rem;color:#141414;line-height:1.6;font-weight:400;margin-bottom:1.4rem;max-width:40rem;}
 .steps{display:flex;align-items:center;margin-bottom:1.5rem;}
-.stp{font-size:13px;font-weight:600;color:#111;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.stp{font-size:0.95rem;font-weight:600;color:#111;display:flex;align-items:center;gap:6px;white-space:nowrap;}
 .stp.dim{color:#777;font-weight:500;}
 .sdot{width:8px;height:8px;border-radius:50%;background:#111;flex-shrink:0;}
 .sdot.dim{background:#bbb;}
@@ -23,8 +24,9 @@ body{background:#f5f0eb;font-family:'Instrument Serif',Georgia,serif;color:#1a1a
 .layout{display:grid;grid-template-columns:1fr minmax(260px,300px);gap:2rem 2.5rem;align-items:start;}
 @media(max-width:720px){.layout{grid-template-columns:1fr;}}
 .layout > .map-col{min-width:0;}
-.vey{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#444;font-weight:600;margin-bottom:.55rem;}
+.vey{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:600;margin-bottom:.55rem;}
 svg.fp{width:100%;max-width:780px;height:auto;display:block;}
+svg.fp text{font-family:'Playfair Display',serif!important;}
 .z{cursor:pointer;}.z .mc{transition:opacity .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
 .z.sold{cursor:not-allowed;pointer-events:none;opacity:.45;filter:grayscale(.4);}
 .z.sold .mc{opacity:.85;}
@@ -33,29 +35,28 @@ svg.fp{width:100%;max-width:780px;height:auto;display:block;}
 .lrow.sold .lp{color:#888;}
 .sold-nb{font-size:13px;color:#5a5248;margin-top:.75rem;line-height:1.45;max-width:36em;}
 .lkey{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:.75rem;}
-.lki{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#444;font-weight:600;}
+.lki{display:flex;align-items:center;gap:6px;font-size:0.8rem;letter-spacing:.05em;text-transform:uppercase;color:#333;font-weight:600;}
 .lkd{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.sey{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#444;font-weight:700;margin-bottom:.75rem;}
-.sempty{font-size:14px;color:#555;line-height:1.65;max-width:26em;}
+.sey{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:700;margin-bottom:.75rem;}
+.sempty{font-size:1rem;color:#3d3d3d;line-height:1.65;max-width:26em;}
 .scard{display:none;}.scard.on{display:block;margin-top:.25rem;}
-.stag{display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:#111;color:#f5f0eb;padding:6px 12px;margin-bottom:.85rem;font-weight:600;}
-.sname{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#111;margin-bottom:.45rem;font-weight:700;}
-.sdesc{font-size:14px;color:#333;line-height:1.65;margin-bottom:1rem;max-width:28em;}
-.sprice{font-size:2rem;color:#111;margin-bottom:.2rem;font-weight:400;line-height:1.1;}
-.scap{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#444;margin-bottom:1.5rem;line-height:1.5;font-weight:600;}
-.rbtn{display:block;width:100%;background:#162B3B;color:#f5f0eb;border:none;padding:14px 12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:.45rem;text-align:center;text-decoration:none;}
+.stag{display:inline-block;font-size:0.68rem;letter-spacing:.12em;text-transform:uppercase;background:#111;color:#f5f0eb;padding:7px 13px;margin-bottom:.85rem;font-weight:600;}
+.sname{font-size:0.95rem;letter-spacing:.06em;text-transform:uppercase;color:#111;margin-bottom:.45rem;font-weight:600;}
+.sdesc{font-size:1.05rem;color:#252525;line-height:1.65;margin-bottom:1rem;max-width:28em;}
+.sprice{font-size:2.1rem;color:#0d0d0d;margin-bottom:.2rem;font-weight:600;line-height:1.1;}
+.scap{font-size:0.95rem;letter-spacing:.05em;text-transform:uppercase;color:#333;margin-bottom:1.5rem;line-height:1.5;font-weight:600;}
+.rbtn{display:block;width:100%;background:#162B3B;color:#f5f0eb;border:none;padding:15px 12px;font-size:0.8rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:0;text-align:center;text-decoration:none;}
 .rbtn:hover{background:#1e3d52;}
-.rnote{font-size:12px;color:#555;text-align:center;}
 .leg{margin-top:1.75rem;padding-top:1.4rem;border-top:1px solid #e8e3dc;}
-.leye{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#444;font-weight:700;margin-bottom:.65rem;}
+.leye{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:#333;font-weight:700;margin-bottom:.65rem;}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid #e8e3dc;cursor:pointer;border-radius:4px;}
 .lrow:hover .ln{color:#111;}
 .lrow:focus-visible{outline:2px solid #162B3B;outline-offset:2px;}
 .lrow.on{background:rgba(22,43,59,.06);border-left:3px solid #9a7b47;margin-left:-3px;padding-left:6px;}
 .lsq{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.ln{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#222;flex:1;font-weight:600;}
-.ln small{display:block;font-size:12px;letter-spacing:.02em;text-transform:none;color:#444;margin-top:4px;font-weight:500;}
-.lp{font-size:13px;color:#111;font-weight:700;white-space:nowrap;}
+.ln{font-size:0.95rem;letter-spacing:.03em;text-transform:uppercase;color:#1a1a1a;flex:1;font-weight:600;}
+.ln small{display:block;font-size:0.92rem;letter-spacing:.01em;text-transform:none;color:#333;margin-top:5px;font-weight:500;}
+.lp{font-size:1rem;color:#0d0d0d;font-weight:700;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -271,7 +272,6 @@ svg.fp{width:100%;max-width:780px;height:auto;display:block;}
   <div class="sprice" id="sprice"></div>
   <div class="scap" id="scap"></div>
   <a class="rbtn" id="rbtn" href="#" target="_blank" rel="noopener">Reserve →</a>
-  <div class="rnote">Completes on houseofloulous.com</div>
 </div>
 <div class="leg">
   <div class="leye">All ticket types</div>
