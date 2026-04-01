@@ -58,6 +58,7 @@
     gap: 2rem 2.5rem;
     align-items: start;
   }
+  .layout > .map-col { min-width: 0; }
 
   @media (max-width: 720px) {
     .layout { grid-template-columns: 1fr; }
@@ -209,11 +210,11 @@
 
   <div class="layout">
 
-    <div>
+    <div class="map-col">
       <div class="map-label">Floor plan</div>
 
       <div class="map-wrap">
-      <svg class="fp" viewBox="0 0 820 1000" xmlns="http://www.w3.org/2000/svg">
+      <svg class="fp" viewBox="0 0 820 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
 
         <rect x="1" y="1" width="818" height="998" fill="#f5f1eb" stroke="#c8c0b4" stroke-width="1.5"/>
 
@@ -234,12 +235,12 @@
         <path d="M 68 998 Q 410 818 752 998 Z" fill="#162B3B"/>
         <text x="410" y="968" text-anchor="middle" font-size="17" letter-spacing="5" fill="#f5f1eb" font-family="Georgia,'Palatino Linotype',Palatino,serif">STAGE</text>
 
+        <g id="tables-layer"></g>
+
         <g id="dinner-stage" pointer-events="none">
           <rect id="dinner-rect" x="298" y="318" width="224" height="48" rx="4" fill="#162B3B" stroke="#0f1f2a" stroke-width="1.8"/>
           <text x="410" y="348" text-anchor="middle" font-size="16" letter-spacing="2" fill="#f5f1eb" font-family="Georgia,'Palatino Linotype',Palatino,serif">DINNER STAGE</text>
         </g>
-
-        <g id="tables-layer"></g>
 
       </svg>
       </div>
@@ -391,7 +392,7 @@
       { n: 7, kind: 'four', pos: { cx: L, cy: 418 } },
       { n: 8, kind: 'four', pos: { cx: G.col, cy: 418 } },
       { n: 9, kind: 'four', pos: { cx: Rg, cy: 418 } },
-      { n: 6, kind: 'four', pos: { cx: G.col, cy: 512 } },
+      { n: 6, kind: 'four', pos: { cx: G.col, cy: 515 } },
       { n: 4, kind: 'intimate', pos: { cx: 330, cy: 604 }, seatGeo: 'tb' },
       { n: 5, kind: 'intimate', pos: { cx: 470, cy: 604 }, seatGeo: 'tb' },
       { n: 2, kind: 'intimate', pos: { cx: 330, cy: 694 }, seatGeo: 'tb' },
