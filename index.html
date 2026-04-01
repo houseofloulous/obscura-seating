@@ -16,12 +16,6 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .evt-date a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .evt-date a:hover{opacity:.85;}
 .evt-schedule{font-size:1.05rem;color:#141414;line-height:1.6;font-weight:400;margin-bottom:1.4rem;max-width:40rem;}
-.steps{display:flex;align-items:center;margin-bottom:1.5rem;}
-.stp{font-size:0.95rem;font-weight:600;color:#111;display:flex;align-items:center;gap:6px;white-space:nowrap;}
-.stp.dim{color:#777;font-weight:500;}
-.sdot{width:8px;height:8px;border-radius:50%;background:#111;flex-shrink:0;}
-.sdot.dim{background:#bbb;}
-.sline{flex:1;height:1px;background:#ddd;margin:0 10px;}
 .rule{border:none;border-top:1px solid #ddd;margin-bottom:1.5rem;}
 .layout{display:grid;grid-template-columns:1fr minmax(260px,300px);gap:2rem 2.5rem;align-items:start;}
 @media(max-width:720px){.layout{grid-template-columns:1fr;}}
@@ -111,20 +105,49 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 .ln{font-size:0.95rem;letter-spacing:.03em;text-transform:uppercase;color:#1a1a1a;flex:1;font-weight:600;}
 .ln small{display:block;font-size:0.92rem;letter-spacing:.01em;text-transform:none;color:#333;margin-top:5px;font-weight:500;}
 .lp{font-size:1rem;color:#0d0d0d;font-weight:700;white-space:nowrap;}
+@media(max-width:720px){
+  body.map-zoom-open .map-zoom-inner{width:280%!important;max-width:none;}
+}
+.table-zoom-hit{cursor:pointer;fill:transparent;stroke:none;pointer-events:all;}
+.seat-touch{pointer-events:all;fill:transparent;stroke:none;}
+body.sel-modal-open{overflow:hidden;}
+.sel-modal{position:fixed;inset:0;z-index:10050;display:flex;align-items:flex-end;justify-content:center;padding:0;box-sizing:border-box;}
+.sel-modal[hidden]{display:none!important;}
+.sel-modal-backdrop{position:absolute;inset:0;background:rgba(20,18,16,.52);backdrop-filter:blur(3px);}
+.sel-modal-dialog{
+  position:relative;width:100%;max-width:28rem;margin:0 auto;max-height:min(88vh,640px);overflow:auto;
+  background:#f5f0eb;border-top-left-radius:16px;border-top-right-radius:16px;
+  box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:1.35rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+  border:1px solid #e0d8ce;border-bottom:none;
+}
+@media(min-width:721px){
+  .sel-modal{align-items:center;padding:1rem;}
+  .sel-modal-dialog{border-radius:16px;border:1px solid #e0d8ce;max-height:90vh;}
+}
+.sel-modal-title{font-family:'Instrument Serif',serif;font-size:1.35rem;font-weight:400;text-align:center;color:#0d0d0d;margin-bottom:.35rem;line-height:1.25;}
+.sel-modal-accent{text-align:center;font-size:0.95rem;color:#5a8050;font-weight:600;margin-bottom:1rem;letter-spacing:.04em;}
+.sel-modal-accent.booth{color:#3a5090;}
+.sel-modal-accent.salon4{color:#a86820;}
+.sel-modal-accent.salon2{color:#902840;}
+.sel-modal-accent.intimate{color:#584888;}
+.sel-modal-box{background:#fff;border:1px solid #e8e3dc;border-radius:12px;padding:1rem 1rem 1rem;margin-bottom:1.25rem;}
+.sel-modal-name{font-size:1.05rem;font-weight:600;color:#111;margin-bottom:.35rem;letter-spacing:.03em;}
+.sel-modal-price{font-size:1.65rem;font-weight:600;color:#0d0d0d;}
+.sel-modal-meta{font-size:0.95rem;color:#454545;line-height:1.55;margin-top:.75rem;}
+.sel-modal-meta a{color:#162B3B;}
+.sel-modal-actions{display:flex;gap:10px;margin-top:.25rem;}
+.sel-modal-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 12px;border-radius:10px;font-size:0.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;text-align:center;border:none;transition:background .15s,opacity .15s;}
+.sel-modal-cancel{background:#3a3632;color:#f5f0eb;}
+.sel-modal-cancel:hover{background:#2a2624;}
+.sel-modal-go{background:#162B3B;color:#f5f0eb;}
+.sel-modal-go:hover{background:#1e3d52;}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="evt-title">OBSCURA</div>
 <div class="evt-date">Sat, May 2, 2026 &nbsp;·&nbsp; <a href="https://maps.app.goo.gl/9FEoVo52BVGVYE2D8" target="_blank" rel="noopener noreferrer">The Red Pavilion</a>, Brooklyn</div>
-<div class="evt-schedule">Check-in at the lobby begins at 8:30 PM. Show: 9:00 PM.</div>
-<div class="steps">
-  <div class="stp"><div class="sdot"></div>Tickets</div>
-  <div class="sline"></div>
-  <div class="stp dim"><div class="sdot dim"></div>Your info</div>
-  <div class="sline"></div>
-  <div class="stp dim"><div class="sdot dim"></div>Payment</div>
-</div>
+<div class="evt-schedule">Check in at the lobby begins at 8:30 PM | Show at 9:00 PM</div>
 <hr class="rule">
 <div class="layout">
 <div class="map-col">
@@ -160,23 +183,25 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 
   <g id="zt17">
     <ellipse class="mc" cx="150" cy="335" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="booth" data-table="17" data-seat="1"><circle class="mc" cx="116" cy="411" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="17" data-seat="2"><circle class="mc" cx="95" cy="387" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="17" data-seat="3"><circle class="mc" cx="83" cy="353" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="17" data-seat="4"><circle class="mc" cx="83" cy="317" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="17" data-seat="5"><circle class="mc" cx="95" cy="283" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="17" data-seat="6"><circle class="mc" cx="116" cy="259" r="10" fill="#5878c8"/></g>
+    <ellipse class="table-zoom-hit" cx="150" cy="335" rx="72" ry="92" fill="transparent" data-zoom-table="17" aria-hidden="true"/>
+    <g class="z" data-pick="booth" data-table="17" data-seat="1"><circle class="seat-touch" cx="116" cy="411" r="22" fill="transparent"/><circle class="mc" cx="116" cy="411" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="2"><circle class="seat-touch" cx="95" cy="387" r="22" fill="transparent"/><circle class="mc" cx="95" cy="387" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="3"><circle class="seat-touch" cx="83" cy="353" r="22" fill="transparent"/><circle class="mc" cx="83" cy="353" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="4"><circle class="seat-touch" cx="83" cy="317" r="22" fill="transparent"/><circle class="mc" cx="83" cy="317" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="5"><circle class="seat-touch" cx="95" cy="283" r="22" fill="transparent"/><circle class="mc" cx="95" cy="283" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="17" data-seat="6"><circle class="seat-touch" cx="116" cy="259" r="22" fill="transparent"/><circle class="mc" cx="116" cy="259" r="10" fill="#5878c8"/></g>
     <text x="150" y="340" text-anchor="middle" font-size="18" fill="#3a5090" font-weight="600" style="pointer-events:none">17</text>
   </g>
 
   <g id="zt16">
     <ellipse class="mc" cx="150" cy="648" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="booth" data-table="16" data-seat="1"><circle class="mc" cx="116" cy="724" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="16" data-seat="2"><circle class="mc" cx="95" cy="700" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="16" data-seat="3"><circle class="mc" cx="83" cy="666" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="16" data-seat="4"><circle class="mc" cx="83" cy="630" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="16" data-seat="5"><circle class="mc" cx="95" cy="596" r="10" fill="#5878c8"/></g>
-    <g class="z" data-pick="booth" data-table="16" data-seat="6"><circle class="mc" cx="116" cy="572" r="10" fill="#5878c8"/></g>
+    <ellipse class="table-zoom-hit" cx="150" cy="648" rx="72" ry="92" fill="transparent" data-zoom-table="16" aria-hidden="true"/>
+    <g class="z" data-pick="booth" data-table="16" data-seat="1"><circle class="seat-touch" cx="116" cy="724" r="22" fill="transparent"/><circle class="mc" cx="116" cy="724" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="2"><circle class="seat-touch" cx="95" cy="700" r="22" fill="transparent"/><circle class="mc" cx="95" cy="700" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="3"><circle class="seat-touch" cx="83" cy="666" r="22" fill="transparent"/><circle class="mc" cx="83" cy="666" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="4"><circle class="seat-touch" cx="83" cy="630" r="22" fill="transparent"/><circle class="mc" cx="83" cy="630" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="5"><circle class="seat-touch" cx="95" cy="596" r="22" fill="transparent"/><circle class="mc" cx="95" cy="596" r="10" fill="#5878c8"/></g>
+    <g class="z" data-pick="booth" data-table="16" data-seat="6"><circle class="seat-touch" cx="116" cy="572" r="22" fill="transparent"/><circle class="mc" cx="116" cy="572" r="10" fill="#5878c8"/></g>
     <text x="150" y="653" text-anchor="middle" font-size="18" fill="#3a5090" font-weight="600" style="pointer-events:none">16</text>
   </g>
 
@@ -207,26 +232,29 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 
   <g id="zt10">
     <circle class="mc" cx="310" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="10" data-seat="1"><circle class="mc" cx="288" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="10" data-seat="2"><circle class="mc" cx="332" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="10" data-seat="3"><circle class="mc" cx="332" cy="245" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="10" data-seat="4"><circle class="mc" cx="288" cy="245" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="310" cy="225" r="34" fill="transparent" data-zoom-table="10" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="1"><circle class="seat-touch" cx="288" cy="205" r="22" fill="transparent"/><circle class="mc" cx="288" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="2"><circle class="seat-touch" cx="332" cy="205" r="22" fill="transparent"/><circle class="mc" cx="332" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="3"><circle class="seat-touch" cx="332" cy="245" r="22" fill="transparent"/><circle class="mc" cx="332" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="10" data-seat="4"><circle class="seat-touch" cx="288" cy="245" r="22" fill="transparent"/><circle class="mc" cx="288" cy="245" r="10" fill="#d89830"/></g>
     <text x="310" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">10</text>
   </g>
   <g id="zt11">
     <circle class="mc" cx="398" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="11" data-seat="1"><circle class="mc" cx="376" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="11" data-seat="2"><circle class="mc" cx="420" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="11" data-seat="3"><circle class="mc" cx="420" cy="245" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="11" data-seat="4"><circle class="mc" cx="376" cy="245" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="398" cy="225" r="34" fill="transparent" data-zoom-table="11" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="1"><circle class="seat-touch" cx="376" cy="205" r="22" fill="transparent"/><circle class="mc" cx="376" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="2"><circle class="seat-touch" cx="420" cy="205" r="22" fill="transparent"/><circle class="mc" cx="420" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="3"><circle class="seat-touch" cx="420" cy="245" r="22" fill="transparent"/><circle class="mc" cx="420" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="11" data-seat="4"><circle class="seat-touch" cx="376" cy="245" r="22" fill="transparent"/><circle class="mc" cx="376" cy="245" r="10" fill="#d89830"/></g>
     <text x="398" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">11</text>
   </g>
   <g id="zt12">
     <circle class="mc" cx="486" cy="225" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="12" data-seat="1"><circle class="mc" cx="464" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="12" data-seat="2"><circle class="mc" cx="508" cy="205" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="12" data-seat="3"><circle class="mc" cx="508" cy="245" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="12" data-seat="4"><circle class="mc" cx="464" cy="245" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="486" cy="225" r="34" fill="transparent" data-zoom-table="12" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="1"><circle class="seat-touch" cx="464" cy="205" r="22" fill="transparent"/><circle class="mc" cx="464" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="2"><circle class="seat-touch" cx="508" cy="205" r="22" fill="transparent"/><circle class="mc" cx="508" cy="205" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="3"><circle class="seat-touch" cx="508" cy="245" r="22" fill="transparent"/><circle class="mc" cx="508" cy="245" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="12" data-seat="4"><circle class="seat-touch" cx="464" cy="245" r="22" fill="transparent"/><circle class="mc" cx="464" cy="245" r="10" fill="#d89830"/></g>
     <text x="486" y="230" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">12</text>
   </g>
 
@@ -250,35 +278,39 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 
   <g id="zt7">
     <circle class="mc" cx="310" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="7" data-seat="1"><circle class="mc" cx="288" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="7" data-seat="2"><circle class="mc" cx="332" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="7" data-seat="3"><circle class="mc" cx="332" cy="530" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="7" data-seat="4"><circle class="mc" cx="288" cy="530" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="310" cy="510" r="34" fill="transparent" data-zoom-table="7" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="1"><circle class="seat-touch" cx="288" cy="490" r="22" fill="transparent"/><circle class="mc" cx="288" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="2"><circle class="seat-touch" cx="332" cy="490" r="22" fill="transparent"/><circle class="mc" cx="332" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="3"><circle class="seat-touch" cx="332" cy="530" r="22" fill="transparent"/><circle class="mc" cx="332" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="7" data-seat="4"><circle class="seat-touch" cx="288" cy="530" r="22" fill="transparent"/><circle class="mc" cx="288" cy="530" r="10" fill="#d89830"/></g>
     <text x="310" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">7</text>
   </g>
   <g id="zt8">
     <circle class="mc" cx="398" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="8" data-seat="1"><circle class="mc" cx="376" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="8" data-seat="2"><circle class="mc" cx="420" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="8" data-seat="3"><circle class="mc" cx="420" cy="530" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="8" data-seat="4"><circle class="mc" cx="376" cy="530" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="398" cy="510" r="34" fill="transparent" data-zoom-table="8" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="1"><circle class="seat-touch" cx="376" cy="490" r="22" fill="transparent"/><circle class="mc" cx="376" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="2"><circle class="seat-touch" cx="420" cy="490" r="22" fill="transparent"/><circle class="mc" cx="420" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="3"><circle class="seat-touch" cx="420" cy="530" r="22" fill="transparent"/><circle class="mc" cx="420" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="8" data-seat="4"><circle class="seat-touch" cx="376" cy="530" r="22" fill="transparent"/><circle class="mc" cx="376" cy="530" r="10" fill="#d89830"/></g>
     <text x="398" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">8</text>
   </g>
   <g id="zt9">
     <circle class="mc" cx="486" cy="510" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="9" data-seat="1"><circle class="mc" cx="464" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="9" data-seat="2"><circle class="mc" cx="508" cy="490" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="9" data-seat="3"><circle class="mc" cx="508" cy="530" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="9" data-seat="4"><circle class="mc" cx="464" cy="530" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="486" cy="510" r="34" fill="transparent" data-zoom-table="9" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="1"><circle class="seat-touch" cx="464" cy="490" r="22" fill="transparent"/><circle class="mc" cx="464" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="2"><circle class="seat-touch" cx="508" cy="490" r="22" fill="transparent"/><circle class="mc" cx="508" cy="490" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="3"><circle class="seat-touch" cx="508" cy="530" r="22" fill="transparent"/><circle class="mc" cx="508" cy="530" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="9" data-seat="4"><circle class="seat-touch" cx="464" cy="530" r="22" fill="transparent"/><circle class="mc" cx="464" cy="530" r="10" fill="#d89830"/></g>
     <text x="486" y="515" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">9</text>
   </g>
 
   <g id="zt6">
     <circle class="mc" cx="398" cy="606" r="28" fill="#c0b8aa" stroke="#a09890" stroke-width="1.2" style="pointer-events:none"/>
-    <g class="z" data-pick="salon4" data-table="6" data-seat="1"><circle class="mc" cx="376" cy="586" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="6" data-seat="2"><circle class="mc" cx="420" cy="586" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="6" data-seat="3"><circle class="mc" cx="420" cy="626" r="10" fill="#d89830"/></g>
-    <g class="z" data-pick="salon4" data-table="6" data-seat="4"><circle class="mc" cx="376" cy="626" r="10" fill="#d89830"/></g>
+    <circle class="table-zoom-hit" cx="398" cy="606" r="34" fill="transparent" data-zoom-table="6" aria-hidden="true"/>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="1"><circle class="seat-touch" cx="376" cy="586" r="22" fill="transparent"/><circle class="mc" cx="376" cy="586" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="2"><circle class="seat-touch" cx="420" cy="586" r="22" fill="transparent"/><circle class="mc" cx="420" cy="586" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="3"><circle class="seat-touch" cx="420" cy="626" r="22" fill="transparent"/><circle class="mc" cx="420" cy="626" r="10" fill="#d89830"/></g>
+    <g class="z" data-pick="salon4" data-table="6" data-seat="4"><circle class="seat-touch" cx="376" cy="626" r="22" fill="transparent"/><circle class="mc" cx="376" cy="626" r="10" fill="#d89830"/></g>
     <text x="398" y="611" text-anchor="middle" font-size="15" fill="#4a4038" font-weight="600" style="pointer-events:none">6</text>
   </g>
 
@@ -343,6 +375,28 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 </div>
 </div>
 </div>
+<div id="selectionModal" class="sel-modal" hidden>
+  <div class="sel-modal-backdrop" data-close-sel-modal tabindex="-1" aria-hidden="true"></div>
+  <div class="sel-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="selModalTitle">
+    <h2 id="selModalTitle" class="sel-modal-title"></h2>
+    <p id="selModalAccent" class="sel-modal-accent" hidden></p>
+    <div class="sel-modal-box">
+      <div class="sel-modal-name" id="selModalName"></div>
+      <div class="sel-modal-price" id="selModalPrice"></div>
+      <div class="sel-modal-meta" id="selModalMeta"></div>
+    </div>
+    <div class="sel-modal-actions">
+      <button type="button" class="sel-modal-btn sel-modal-cancel" id="selModalCancel">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Cancel
+      </button>
+      <a class="sel-modal-btn sel-modal-go" id="selModalGo" href="#" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+        Continue
+      </a>
+    </div>
+  </div>
+</div>
 <script>
 var T={
   ga:{tag:'General Admission',desc:'Standing room on the GA floor with full access to the evening.',price:'$70',cap:'Standing Room',url:'https://www.houseofloulous.com/obscurastickets/p/ga'},
@@ -353,6 +407,77 @@ var T={
 };
 window.OBSCURA_SOLD={ga:false,tables:[],seats:[]};
 var __mapZoom={open:null,close:null};
+function closeSelectionModal(){
+  var modal=document.getElementById('selectionModal');
+  if(!modal) return;
+  modal.setAttribute('hidden','');
+  document.body.classList.remove('sel-modal-open');
+}
+function openSelectionModalIfMobile(){
+  if(!window.matchMedia('(max-width:720px)').matches) return;
+  var rbtn=document.getElementById('rbtn');
+  if(!rbtn||rbtn.classList.contains('rbtn-disabled')) return;
+  var href=rbtn.getAttribute('href');
+  if(!href||href==='#') return;
+  var stag=document.getElementById('stag').textContent.trim();
+  var scap=document.getElementById('scap').textContent.trim();
+  var sprice=document.getElementById('sprice').textContent.trim();
+  var sdesc=document.getElementById('sdesc');
+  document.getElementById('selModalTitle').textContent=stag;
+  var acc=document.getElementById('selModalAccent');
+  acc.textContent=stag;
+  acc.hidden=false;
+  acc.className='sel-modal-accent';
+  if(/General Admission/i.test(stag)) acc.classList.add('ga');
+  else if(/Madame|Booth for 6/i.test(stag)) acc.classList.add('booth');
+  else if(/Salon Table for 4/i.test(stag)) acc.classList.add('salon4');
+  else if(/Salon Table for 2/i.test(stag)) acc.classList.add('salon2');
+  else if(/Intimate/i.test(stag)) acc.classList.add('intimate');
+  document.getElementById('selModalName').textContent=scap||stag;
+  document.getElementById('selModalPrice').textContent=sprice;
+  document.getElementById('selModalMeta').innerHTML=sdesc?sdesc.innerHTML:'';
+  var go=document.getElementById('selModalGo');
+  go.href=href;
+  go.setAttribute('aria-label','Continue to checkout: '+stag);
+  document.getElementById('selectionModal').removeAttribute('hidden');
+  document.body.classList.add('sel-modal-open');
+}
+function bindSelectionModal(){
+  var modal=document.getElementById('selectionModal');
+  if(!modal) return;
+  function close(){ closeSelectionModal(); }
+  var c=document.getElementById('selModalCancel');
+  if(c) c.addEventListener('click', close);
+  modal.querySelectorAll('[data-close-sel-modal]').forEach(function(el){ el.addEventListener('click', close); });
+}
+function zoomToTableGroup(tableId){
+  var wrap=document.getElementById('zt'+tableId);
+  if(!wrap) return;
+  if(__mapZoom.open) __mapZoom.open();
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      try{
+        wrap.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
+      }catch(err){
+        try{ wrap.scrollIntoView(true); }catch(e2){}
+      }
+    });
+  });
+}
+function bindTableZoom(){
+  var svg=document.querySelector('svg.fp');
+  if(!svg) return;
+  svg.addEventListener('click', function(e){
+    var el=e.target;
+    var zh=el.closest && el.closest('.table-zoom-hit');
+    if(!zh) return;
+    var tid=zh.getAttribute('data-zoom-table');
+    if(!tid) return;
+    e.preventDefault();
+    e.stopPropagation();
+    zoomToTableGroup(tid);
+  }, true);
+}
 function ticketHref(base, type, tableNum, seatNum){
   try{
     var u=new URL(base, window.location.href);
@@ -581,6 +706,7 @@ function pick(type, num, rowEl, seatNum, seatEl){
   var href=ticketHref(d.url, type, num, seatNum);
   pickEnabledRbtn(rbtn, href, 'Continue to checkout: '+stag+(seatNum?' (Table '+num+' seat '+seatNum+')':''));
   if(needsSeat&&seatEl) scrollSeatIntoZoomStage(seatEl);
+  openSelectionModalIfMobile();
 }
 function bindMap(){
   var svg=document.querySelector('svg.fp');
@@ -635,13 +761,24 @@ function bindMapZoom(){
   btn.addEventListener('click',function(e){ e.preventDefault(); openView(); });
   close.addEventListener('click',closeView);
   if(out) out.addEventListener('click',function(e){ e.preventDefault(); closeView(); });
+}
+function bindEscapeLayers(){
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape' && document.body.classList.contains('map-zoom-open')) closeView();
+    if(e.key!=='Escape') return;
+    var modal=document.getElementById('selectionModal');
+    if(modal&&!modal.hidden){
+      closeSelectionModal();
+      return;
+    }
+    if(document.body.classList.contains('map-zoom-open')&&__mapZoom.close) __mapZoom.close();
   });
 }
 applySoldState({ga:false,tables:[],seats:[]});
 bindMapZoom();
+bindTableZoom();
 bindMap();
+bindSelectionModal();
+bindEscapeLayers();
 fetch(new URL('obscura-sold.json', location.href).toString(), { cache: 'no-store' })
   .then(function(r){ return r.ok ? r.json() : {}; })
   .catch(function(){ return {}; })
