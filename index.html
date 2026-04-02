@@ -23,15 +23,6 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .map-shell{position:relative;}
 .map-stage{position:relative;width:100%;}
 .map-zoom-inner{width:100%;}
-.map-zoom-btn{
-  position:absolute;top:4px;left:4px;z-index:10;
-  width:44px;height:44px;border:1px solid #c9c2b8;border-radius:4px;
-  background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.1);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;padding:0;
-  color:#162B3B;
-}
-.map-zoom-btn:hover{background:#faf8f5;}
-.map-zoom-btn:focus-visible{outline:2px solid #162B3B;outline-offset:2px;}
 .map-zoom-close{
   position:fixed;top:12px;right:12px;z-index:10001;
   width:44px;height:44px;border:1px solid #c9c2b8;border-radius:4px;
@@ -50,7 +41,6 @@ body{background:#f5f0eb;font-family:'Playfair Display',serif;color:#141414;line-
 .map-zoom-out:focus-visible{outline:2px solid #162B3B;outline-offset:2px;}
 body.map-zoom-open{overflow:hidden;}
 body.map-zoom-open .map-zoom-close{display:flex;}
-body.map-zoom-open .map-zoom-btn{display:none;}
 body.map-zoom-open .map-shell{
   position:fixed;inset:0;z-index:10000;background:#f5f0eb;
   display:flex;flex-direction:column;overflow:hidden;
@@ -61,14 +51,13 @@ body.map-zoom-open .map-stage{
 }
 body.map-zoom-open .map-zoom-inner{
   width:165%;max-width:1300px;margin:0 auto;
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 body.map-zoom-open .map-zoom-inner .fp{width:100%;max-width:none;}
 body.map-zoom-open .sidebar-col{visibility:hidden;pointer-events:none;}
 body.map-zoom-open .sold-nb{display:none!important;}
-@media(min-width:721px){
-  .map-zoom-btn{top:8px;left:8px;}
-}
-svg.fp{width:100%;max-width:780px;height:auto;display:block;}
+svg.fp{width:100%;max-width:780px;height:auto;display:block;shape-rendering:geometricPrecision;text-rendering:geometricPrecision;}
 svg.fp text{font-family:'Playfair Display',serif!important;}
 .z{cursor:pointer;}.z .mc{transition:opacity .12s,fill .12s,stroke .12s;}.z:hover .mc{opacity:.65;}.z.on .mc{stroke-width:3!important;filter:brightness(1.1);}
 .z[data-seat].on .mc{opacity:1!important;filter:none!important;}
@@ -106,7 +95,7 @@ g.table-pending > circle:first-child{filter:drop-shadow(0 0 10px rgba(22,43,59,.
 .ln small{display:block;font-size:0.92rem;letter-spacing:.01em;text-transform:none;color:#333;margin-top:5px;font-weight:500;}
 .lp{font-size:1rem;color:#0d0d0d;font-weight:700;white-space:nowrap;}
 @media(max-width:720px){
-  body.map-zoom-open .map-zoom-inner{width:280%!important;max-width:none;}
+  body.map-zoom-open .map-zoom-inner{width:220%!important;max-width:none;}
 }
 .table-zoom-hit{cursor:pointer;fill:transparent;stroke:none;pointer-events:all;}
 .seat-touch{pointer-events:all;fill:transparent;stroke:none;}
@@ -152,9 +141,6 @@ body.sel-modal-open{overflow:hidden;}
 <div class="layout">
 <div class="map-col">
 <div class="map-shell" id="mapShell">
-<button type="button" class="map-zoom-btn" id="mapZoomBtn" aria-expanded="false" aria-controls="mapShell" title="Expand floor plan">
-  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg>
-</button>
 <button type="button" class="map-zoom-close" id="mapZoomClose" hidden aria-label="Close expanded map">×</button>
 <button type="button" class="map-zoom-out" id="mapZoomOut" hidden aria-label="Zoom out floor plan" title="Zoom out">
   <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><path d="M16 16l4 4M8 11h6"/></svg>
@@ -450,19 +436,42 @@ function bindSelectionModal(){
   if(c) c.addEventListener('click', close);
   modal.querySelectorAll('[data-close-sel-modal]').forEach(function(el){ el.addEventListener('click', close); });
 }
+function isMobileMap(){
+  return window.matchMedia('(max-width:720px)').matches;
+}
+function centerElementInMapStage(el){
+  if(!el) return;
+  function run(){
+    var stage=document.querySelector('body.map-zoom-open .map-stage');
+    if(!stage) return;
+    var er=el.getBoundingClientRect();
+    var sr=stage.getBoundingClientRect();
+    if(er.width<2&&er.height<2) return;
+    var cx=er.left+er.width/2;
+    var cy=er.top+er.height/2;
+    var relX=cx-sr.left+stage.scrollLeft;
+    var relY=cy-sr.top+stage.scrollTop;
+    var maxL=Math.max(0, stage.scrollWidth-stage.clientWidth);
+    var maxT=Math.max(0, stage.scrollHeight-stage.clientHeight);
+    stage.scrollLeft=Math.min(maxL, Math.max(0, relX-stage.clientWidth/2));
+    stage.scrollTop=Math.min(maxT, Math.max(0, relY-stage.clientHeight/2));
+  }
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      run();
+      setTimeout(run, 64);
+    });
+  });
+}
 function zoomToTableGroup(tableId){
   var wrap=document.getElementById('zt'+tableId);
   if(!wrap) return;
+  if(!isMobileMap()){
+    try{ wrap.scrollIntoView({block:'center', behavior:'smooth'}); }catch(err){}
+    return;
+  }
   if(__mapZoom.open) __mapZoom.open();
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      try{
-        wrap.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
-      }catch(err){
-        try{ wrap.scrollIntoView(true); }catch(e2){}
-      }
-    });
-  });
+  centerElementInMapStage(wrap);
 }
 function bindTableZoom(){
   var svg=document.querySelector('svg.fp');
@@ -658,18 +667,9 @@ function pickPendingSeat(type, num, rowEl){
   pickDisabledRbtn(document.getElementById('rbtn'));
 }
 function scrollSeatIntoZoomStage(seatEl){
-  if(!seatEl||!__mapZoom.open) return;
-  if(!window.matchMedia('(max-width:720px)').matches) return;
-  __mapZoom.open();
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      try{
-        seatEl.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
-      }catch(err){
-        try{ seatEl.scrollIntoView(true); }catch(e2){}
-      }
-    });
-  });
+  if(!seatEl||!isMobileMap()) return;
+  if(__mapZoom.open) __mapZoom.open();
+  centerElementInMapStage(seatEl);
 }
 function pick(type, num, rowEl, seatNum, seatEl){
   var needsSeat=(type==='salon4'||type==='booth');
@@ -706,6 +706,10 @@ function pick(type, num, rowEl, seatNum, seatEl){
   var href=ticketHref(d.url, type, num, seatNum);
   pickEnabledRbtn(rbtn, href, 'Continue to checkout: '+stag+(seatNum?' (Table '+num+' seat '+seatNum+')':''));
   if(needsSeat&&seatEl) scrollSeatIntoZoomStage(seatEl);
+  else if(!needsSeat&&seatEl&&isMobileMap()){
+    if(__mapZoom.open) __mapZoom.open();
+    centerElementInMapStage(seatEl);
+  }
   openSelectionModalIfMobile();
 }
 function bindMap(){
@@ -736,29 +740,23 @@ function bindMap(){
   });
 }
 function bindMapZoom(){
-  var btn=document.getElementById('mapZoomBtn');
   var close=document.getElementById('mapZoomClose');
   var out=document.getElementById('mapZoomOut');
-  if(!btn||!close) return;
+  if(!close) return;
   function openView(){
     document.body.classList.add('map-zoom-open');
-    btn.setAttribute('aria-expanded','true');
-    btn.setAttribute('hidden','');
     close.removeAttribute('hidden');
     if(out) out.removeAttribute('hidden');
     document.body.style.overflow='hidden';
   }
   function closeView(){
     document.body.classList.remove('map-zoom-open');
-    btn.setAttribute('aria-expanded','false');
-    btn.removeAttribute('hidden');
     close.setAttribute('hidden','');
     if(out) out.setAttribute('hidden','');
     document.body.style.overflow='';
   }
   __mapZoom.open=openView;
   __mapZoom.close=closeView;
-  btn.addEventListener('click',function(e){ e.preventDefault(); openView(); });
   close.addEventListener('click',closeView);
   if(out) out.addEventListener('click',function(e){ e.preventDefault(); closeView(); });
 }
