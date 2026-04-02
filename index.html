@@ -160,7 +160,7 @@ body.sel-modal-open{overflow:hidden;}
   <text x="718" y="22" font-size="17" fill="#bbb" style="pointer-events:none">🚻</text>
 
   <path d="M 80 920 Q 390 800 700 920 Z" fill="#2a2520"/>
-  <text x="390" y="876" text-anchor="middle" font-size="17" letter-spacing="4" fill="#f5f0eb" style="pointer-events:none">STAGE</text>
+  <text x="390" y="888" text-anchor="middle" dominant-baseline="middle" font-size="16" letter-spacing="3" fill="#f5f0eb" style="pointer-events:none">STAGE</text>
 
   <g id="zt17">
     <ellipse class="mc" cx="150" cy="335" rx="68" ry="88" fill="#e0dbd2" stroke="#b8b0a4" stroke-width="1.2" style="pointer-events:none"/>
@@ -336,7 +336,7 @@ body.sel-modal-open{overflow:hidden;}
 </div>
 <div class="sidebar-col">
 <div class="sey">Your Selection</div>
-<div id="empty" class="sempty">Tap any table or the GA floor to see details and reserve.</div>
+<div id="empty" class="sempty">Tap any table, seat, or the GA to see details and reserve.</div>
 <div id="card" class="scard">
   <div class="stag" id="stag"></div>
   <div class="sname" id="sname"></div>
@@ -698,7 +698,11 @@ function pick(type, num, rowEl, seatNum, seatEl){
     if(__mapZoom.open) __mapZoom.open();
     centerElementInMapStage(seatEl);
   }
-  if(isMobileMap()&&needsSeat&&seatNum&&seatEl){
+  var showMobileCheckoutModal=isMobileMap()&&(
+    (needsSeat&&seatNum&&seatEl)||
+    (type==='salon2'||type==='intimate')
+  );
+  if(showMobileCheckoutModal){
     if(window.__seatModalTimer) clearTimeout(window.__seatModalTimer);
     window.__seatModalTimer=setTimeout(function(){
       window.__seatModalTimer=null;
